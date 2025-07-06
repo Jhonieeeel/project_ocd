@@ -1,0 +1,148 @@
+<div
+    x-cloak
+    x-data="{ show: false }"
+    x-transition
+    x-show="show"
+    x-on:open-modal.window="show = true;"
+    x-on:close-modal.window="show = false"
+    class="fixed inset-0 z-50"
+>
+    <div
+        x-on:click="show = false"
+        class="fixed inset-0 bg-gray-300 opacity-50"
+    ></div>
+
+    <!-- Modal Content -->
+    <div
+        class="fixed left-1/2 top-10 w-full max-w-md -translate-x-1/2 rounded bg-white p-4 shadow-lg sm:px-5 sm:py-9 xl:max-w-lg"
+    >
+        <h4 class="pb-4 text-xl font-semibold">Add Stock</h4>
+        <p x-text="supply_id"></p>
+
+        {{-- forms --}}
+        <form wire:submit.prevent="saveStock" class="mt-4 space-y-2">
+            <input type="hidden" wire:model="supply_id" x-model="supply_id" />
+            @error('stockForm.supply_id')
+            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+            <div
+                class="items-center justify-between rounded border border-green-500 bg-green-200 p-4 sm:flex"
+            >
+                <div>
+                    <small class="text-xs text-gray-600"
+                        >Item Description</small
+                    >
+                    <p
+                        class="text-lg font-semibold text-gray-800"
+                        x-text="supply_item"
+                    ></p>
+                </div>
+                <div>
+                    <small class="text-xs text-gray-600">Category</small>
+                    <p
+                        class="text-lg font-semibold text-gray-800"
+                        x-text="supply_category"
+                    ></p>
+                </div>
+                <div>
+                    <small class="text-xs text-gray-600">Unit</small>
+                    <p
+                        class="text-lg font-semibold capitalize text-gray-800"
+                        x-text="supply_unit"
+                    ></p>
+                </div>
+            </div>
+            {{-- inputs --}}
+            <div>
+                <x-input-label for="barcode" :value="__('Barcode')" />
+                <x-text-input
+                    id="barcode"
+                    type="text"
+                    wire:model="stockForm.barcode"
+                    class="w-full"
+                    required
+                    autofocus
+                />
+                @error('stockForm.barcode')
+                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+            <div class="sm:flex sm:items-center sm:gap-x-2">
+                <div>
+                    <x-input-label
+                        for="item_quantity"
+                        :value="__('Item Quantity')"
+                    />
+                    <x-text-input
+                        id="item_quantity"
+                        type="number"
+                        wire:model="stockForm.item_quantity"
+                        class="w-full"
+                        required
+                        autofocus
+                    />
+                    @error('stockForm.item_quantity')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <x-input-label for="item_price" :value="__('Item Price')" />
+                    <x-text-input
+                        step="0.01"
+                        id="item_price"
+                        type="number"
+                        wire:model="item_price"
+                        class="w-full"
+                        required
+                        autofocus
+                    />
+                    @error('item_price')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+            <div>
+                <x-input-label for="expiration" :value="__('Expiration')" />
+                <x-text-input
+                    id="expiration"
+                    type="text"
+                    wire:model="stockForm.expiration"
+                    class="w-full"
+                    required
+                    autofocus
+                />
+                @error('stockForm.expiration')
+                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
+                <x-input-label for="remarks" :value="__('Remarks')" />
+                <x-text-input
+                    id="remarks"
+                    type="text"
+                    wire:model="stockForm.remarks"
+                    class="w-full"
+                    required
+                    autofocus
+                />
+                @error('stockForm.remarks')
+                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+            <div class="sm:flex sm:items-center sm:justify-end sm:gap-x-5">
+                <button
+                    @click="$dispatch('close-modal')"
+                    class="mt-4 text-sm text-red-500 hover:font-medium"
+                >
+                    Close
+                </button>
+                <button
+                    type="submit"
+                    class="mt-4 text-sm text-green-600 hover:font-medium"
+                >
+                    Add Stock
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
