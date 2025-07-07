@@ -20,8 +20,8 @@ class StockForm extends Form
     public $remarks;
 
     #[Validate(['required'])]
-    public $expiration; 
+    public $expiration;
 
-    #[Validate(['required'])]
+    #[Validate(['required', 'exists:supplies,id'])]
     public $supply_id;
 }

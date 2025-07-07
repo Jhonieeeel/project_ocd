@@ -24,8 +24,9 @@ class User extends Authenticatable
         'password',
     ];
 
-    public function cart() {
-        return $this->hasMany(Cart::class);
+    public function withdraw()
+    {
+        return $this->hasMany(Withdraw::class);
     }
 
     /**

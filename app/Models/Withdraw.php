@@ -13,26 +13,37 @@ class Withdraw extends Model
         'approved_by',
         'issued_by',
         'received_by',
-        'stock_id'
+        'status',
+        'stock_id',
+        'user_id',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-    public function stock() {
+    public function stock()
+    {
         return $this->belongsTo(Stock::class);
     }
 
-    public function approvedBy(){
+    public function approvedBy()
+    {
         return $this->belongsTo(User::class, 'approved_by');
     }
 
-    public function requestedBy(){
+    public function requestedBy()
+    {
         return $this->belongsTo(User::class, 'requested_by');
     }
 
-    public function issuedBy() {
+    public function issuedBy()
+    {
         return $this->belongsTo(User::class, 'issued_by');
     }
 
-    public function receivedBy() {
+    public function receivedBy()
+    {
         return $this->belongsTo(User::class, 'received_by');
     }
 }

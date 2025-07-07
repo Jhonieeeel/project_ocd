@@ -17,25 +17,25 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        
+
         // super admin
         $super = User::factory()->create([
-            'name' => 'Dave Super',
+            'name' => 'Super User',
             'email' => 'super@example.com',
         ]);
 
         $admin = User::factory()->create([
-            'name' => 'Dave Admin',
+            'name' => 'Admin User',
             'email' => 'admin@example.com',
         ]);
 
         $issueance = User::factory()->create([
-            'name' => 'Sir Ray Admin',
-            'email' => 'ray_admin@example.com',
+            'name' => 'Issuenace User',
+            'email' => 'issuenace@example.com',
         ]);
 
         $user = User::factory()->create([
-            'name' => 'Dave User',
+            'name' => 'Employee',
             'email' => 'user@example.com',
         ]);
 
@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
         $admin->assignRole('admin');
         $issueance->assignRole('admin');
-        
+
         $user->assignRole('user');
 
         Supply::create([
@@ -65,6 +65,5 @@ class DatabaseSeeder extends Seeder
             'category' => 'Supplies',
             'unit' => 'bottle'
         ]);
-         
     }
 }

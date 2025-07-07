@@ -24,13 +24,15 @@ class SupplyTable extends Component
     public Supply $selectedSupply;
 
 
-    public function addStock(Supply $supply) {
+    public function addStock(Supply $supply)
+    {
         $this->selectedSupply = $supply;
         $this->stockForm->supply_id = $supply->id;
         $this->dispatch('open-modal');
     }
-   
-    public function saveSupply(){
+
+    public function saveSupply()
+    {
         $this->supplyForm->validate();
 
         $imagePath = null;
@@ -43,7 +45,7 @@ class SupplyTable extends Component
             'item_description' => $this->item_description,
             'category' => $this->category,
             'unit' => $this->unit,
-            'image' => $imagePath,  
+            'image' => $imagePath,
         ]);
 
         session()->flash('status', 'Supply added.');
@@ -51,17 +53,10 @@ class SupplyTable extends Component
         $this->supplyForm->reset(['image', 'item_description', 'unit', 'category']);
     }
 
-    public function saveStock() {
+    public function saveStock()
+    {
         $this->stockForm->validate();
-        $existedStock = Stock::where('supply_id', $this->stockForm->supply_id)->first();
-        if ($existedStock) {
 
-            $existedStock->item_quantity += $this->stockForm->item_quantity;
-            $existedStock->save();
-
-            return redirect()->route('stocks')->with('stock', 'Supply already exists. Quantity has been updated.');
-
-        } 
         Stock::create([
             'barcode' => $this->stockForm->barcode,
             'item_price' => $this->stockForm->item_price,
@@ -71,27 +66,28 @@ class SupplyTable extends Component
             'supply_id' => $this->stockForm->supply_id
         ]);
 
+        $this->reset(['stockForm.barcode', 'stockForm.item_quantity', 'stockForm.item_price']);
+
         $this->dispatch('close-modal');
-        
+
         return redirect()->route('stocks')->with('stock', 'Stock added!');
-        
-        
-        
     }
 
-    public function delete(Supply $supply) {
+    public function delete(Supply $supply)
+    {
         $supply->delete();
 
         session()->flash('deleted', 'Supply added.');
-
     }
 
-    public function mount(){
+    public function mount()
+    {
         $this->selectedSupply = Supply::first() ?? new Supply();
     }
 
     #[Computed()]
-    public function supplies() {
+    public function supplies()
+    {
         return Supply::latest()->paginate(5);
     }
 
