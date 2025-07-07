@@ -22,8 +22,11 @@
 
                     <a href="{{ route('stocks') }}"
                         class="relative hidden transition-all duration-300  p-2 sm:flex sm:items-center sm:gap-x-2 hover:text-orange-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-box-icon lucide-box">
-                            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-box-icon lucide-box">
+                            <path
+                                d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
                             <path d="m3.3 7 8.7 5 8.7-5" />
                             <path d="M12 22V12" />
                         </svg>
@@ -31,9 +34,7 @@
                         <!-- Label Text -->
                         <span class="hidden text-sm  sm:block">View Stocks</span>
                     </a>
-                </div
-                    {{-- table --}}
-                    <div class="overflow-hidden shadow">
+                </div {{-- table --}} <div class="overflow-hidden shadow">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-orange-500">
                         <tr>
@@ -44,27 +45,20 @@
                                           <label for="hs-table-search-checkbox-all" class="sr-only">Checkbox</label>
                                       </div>
                                   </th> --}}
-                            <th scope="col"
-                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
                                 Barcode</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
                                 Item Description</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
                                 Quantity</th>
 
-                            <th scope="col"
-                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
                                 Requested by</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
                                 Approved by</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
                                 Issued by</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
+                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
                                 Received by</th>
                             <th scope="col" colspan="2"
                                 class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
@@ -73,54 +67,51 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @forelse($this->requests as $request)
-                        <tr class="w-full">
-                            <td
-                                class="whitespace-nowrap px-6 py-4 text-sm font-medium capitalize text-gray-800">
-                                {{ $request->stock->barcode }}
-                            </td>
-                            <td
-                                class="whitespace-nowrap px-6 py-4 text-sm font-medium capitalize text-gray-800">
-                                {{ $request->stock->supply->item_description }}
-                            </td>
-                            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
-                                {{ $request->requested_quantity }}
-                            </td>
+                            <tr class="w-full">
+                                <td class="whitespace-nowrap px-6 py-4 text-sm font-medium capitalize text-gray-800">
+                                    {{ $request->stock->barcode }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-sm font-medium capitalize text-gray-800">
+                                    {{ $request->stock->supply->item_description }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                                    {{ $request->requested_quantity }}
+                                </td>
 
-                            <td
-                                class="whitespace-nowrap px-6 py-4 text-sm {{ $request->requestedBy ? 'text-gray-800' : 'text-gray-400' }}">
-                                {{ auth()->user()->id === $request->requestedBy->name ? 'You' : $request->requestedBy->name }}
-                            </td>
-                            <td
-                                class="whitespace-nowrap px-6 py-4 text-sm {{ $request->approvedBy ? 'text-gray-800' : 'text-gray-400' }}">
-                                {{ $request->approvedBy ? $request->approvedBy->name : 'Pending' }}
-                            </td>
-                            <td
-                                class="whitespace-nowrap px-6 py-4 text-sm {{ $request->issuedBy ? 'text-gray-800' : 'text-gray-400' }}">
-                                {{ $request->issuedBy ? $request->issuedBy->name : 'Pending' }}
-                            </td>
-                            <td
-                                class="whitespace-nowrap px-6 py-4 text-sm {{ $request->receivedBy ? 'text-gray-800' : 'text-gray-400' }}">
-                                {{ $request->receivedBy ? $request->receivedBy->name : 'Pending' }}
-                            </td>
-                            <td
-                                colspan="2"
-                                class="items-center whitespace-nowrap px-6 py-4 text-end text-sm font-medium sm:flex sm:justify-start sm:gap-x-2 xl:gap-x-3">
-                                <button wire:click="selectEdit({{ $request }})"
-                                    class="text-green-600 hover:text-green-800">
-                                    View
-                                </button>
-                                <button type="button"
-                                    class="text-red-600 hover:text-red-800">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 text-sm {{ $request->requestedBy ? 'text-gray-800' : 'text-gray-400' }}">
+                                    {{ auth()->user()->id === $request->requestedBy->name ? 'You' : $request->requestedBy->name }}
+                                </td>
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 text-sm {{ $request->approvedBy ? 'text-gray-800' : 'text-gray-400' }}">
+                                    {{ $request->approvedBy ? $request->approvedBy->name : 'Pending' }}
+                                </td>
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 text-sm {{ $request->issuedBy ? 'text-gray-800' : 'text-gray-400' }}">
+                                    {{ $request->issuedBy ? $request->issuedBy->name : 'Pending' }}
+                                </td>
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 text-sm {{ $request->receivedBy ? 'text-gray-800' : 'text-gray-400' }}">
+                                    {{ $request->receivedBy ? $request->receivedBy->name : 'Pending' }}
+                                </td>
+                                <td colspan="2"
+                                    class="items-center whitespace-nowrap px-6 py-4 text-end text-sm font-medium sm:flex sm:justify-start sm:gap-x-2 xl:gap-x-3">
+                                    <button wire:click="selectEdit({{ $request }})"
+                                        class="text-green-600 hover:text-green-800">
+                                        Edit
+                                    </button>
+                                    <button type="button" class="text-red-600 hover:text-red-800">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="9" class="py-3 text-center text-sm text-gray-500">You have no requested items
-                                yet.
-                            </td>
-                        </tr>
+                            <tr>
+                                <td colspan="9" class="py-3 text-center text-sm text-gray-500">You have no requested
+                                    items
+                                    yet.
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -166,7 +157,7 @@
                             class="sm:w-54 sm:h-10 rounded border-gray-400 focus:ring-orange-500 focus:border-orange-500">
                         <x-input-error :messages="$errors->get('requested_quantity')" class="mt-2" />
                         @error('requested_quantity')
-                        <span class="text-red-500 block sm:mt-2 text-sm">{{ $message }}</span>
+                            <span class="text-red-500 block sm:mt-2 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
                     <hr>
@@ -174,9 +165,11 @@
                 <div class="sm:flex justify-end sm:items-center sm:gap-3 py-3">
                     <button type="button" x-on:click="$dispatch('close-edit-modal')"
                         class=" text-red-600 hover:text-red-700 hover:font-medium text-sm">Cancel</button>
-                    <button wire:click="update" class="text-green-600 hover:text-green-700 hover:font-medium text-sm">Request</button>
+                    <button wire:click="update"
+                        class="text-green-600 hover:text-green-700 hover:font-medium text-sm">Request</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+

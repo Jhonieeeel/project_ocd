@@ -10,66 +10,90 @@ use Livewire\Component;
 
 class RequestTable extends Component
 {
-    public $requestedId;
     public $item_quantity;
-
-    public Withdraw $selectedRequest;
-
     public $requested_quantity;
-    public $approver_id;
-    public $issueance_id;
-    public $requestedUser;
-    public $receivedUser;
+    public $stock_id;
+    public $max_quantity;
 
     public WithdrawForm $withdrawForm;
+    public Withdraw $selectedRequest;
+
+
+
+    public $approverName;
+    public $issueanceName;
+
+
+    public function viewRequest(Withdraw $withdraw)
+    {
+        $this->selectedRequest = $withdraw;
+        $this->max_quantity = $withdraw->item_quantity;
+        $this->withdrawForm->stock_id = $withdraw->stock_id;
+        $this->withdrawForm->requested_by = $withdraw->requested_by;
+        $this->withdrawForm->received_by = $withdraw->received_by;
+        $this->withdrawForm->requested_quantity = $withdraw->requested_quantity;
+
+        // names
+        $this->approverName = $withdraw->approvedBy?->name;
+        $this->issueanceName = $withdraw->issuedBy?->name;
+        $this->dispatch('open-modal');
+    }
 
     #[Computed()]
-    public function superAdmins()
+    public function approveUsers()
     {
         if ($this->selectedRequest) {
             return User::where('id', '!=', $this->selectedRequest->user->id)->get();
+        }else {
+            return User::where('name', '!=', $this->approverName)->get();
         }
-
-        return User::all();
+        return collect();
     }
 
     #[Computed()]
-    public function admins()
-    {
-        if ($this->issueance_id) {
-            return User::where('id', '!=', $this->approver_id)->get();
+    public function issueanceUsers(){
+        if ($this->withdrawForm->approved_by) {
+            return User::where('id', '!=', $this->withdrawForm->approved_by)->get();
+        }else if($this->approverName){
+            return User::where('name', '!=', $this->approverName)->get();
         }
-        return User::all();
+
+        return collect();
     }
 
+    #[Computed()]
+    public function requestAndReceive()
+    {
+        if ($this->selectedRequest) {
+           
+            return Withdraw::where('requested_by', $this->selectedRequest->requested_by)
+                           ->with('requestedBy') 
+                           ->get();
+        }
+    
+        return collect();
+    }
 
     public function update()
     {
-        $this->withdrawForm->received_by = $this->selectedRequest->received_by;
-        $this->withdrawForm->requested_by = $this->selectedRequest->requested_by;
-        $this->withdrawForm->approved_by = $this->approver_id;
-        $this->withdrawForm->issued_by = $this->issueance_id;
+        $this->withdrawForm->validate([
+            'requested_quantity' => ['required', 'integer', 'min:1', 'max:' . $this->selectedRequest->stock->item_quantity],
+        ]);
 
-        $requested = Withdraw::find($this->selectedRequest->id);
-        if ($requested) {
-            if ($this->approver_id && $this->issueance_id) {
-                $this->withdrawForm->status = true;
-            }
-            $this->withdrawForm->status = false;
-            $this->withdrawForm->validate();
+        $this->withdrawForm->validate();
 
-            $validated = $this->validate([
-                'requested_quantity' => ['required', 'integer', 'min:1', 'max:' . $this->selectedRequest->stock->item_quantity],
-            ]);
+        $id = $this->withdrawForm->stock_id;
+       
+        $withdraw = Withdraw::find($id);
 
-            $requested->requested_quantity = $validated['requested_quantity'];
-
-            $requested->save();
-
-            dd($this->withdrawForm->approved_by);
-
-            return redirect()->route('request-list');
-        }
+        $withdraw->status = ($this->withdrawForm->approved_by && $this->withdrawForm->issued_by);
+        $withdraw->requested_quantity = $this->withdrawForm->requested_quantity;
+        $withdraw->approved_by = $this->withdrawForm->approved_by;
+        $withdraw->issued_by = $this->withdrawForm->issued_by;
+        $withdraw->received_by = $this->withdrawForm->requested_by;
+        $withdraw->requested_by = $this->withdrawForm->requested_by;
+        
+        $withdraw->save();
 
         return redirect()->route('request-list');
     }
@@ -77,18 +101,7 @@ class RequestTable extends Component
     public function delete(Withdraw $withdraw)
     {
         $withdraw->delete();
-
         $this->dispatch('close-modal');
-    }
-
-    public function viewRequest(Withdraw $withdraw)
-    {
-        $this->selectedRequest = $withdraw;
-        $this->requestedId = $withdraw->id;
-        $this->requestedUser = $withdraw->requestedBy->name;
-        $this->receivedUser = $withdraw->requestedBy->name;
-        $this->requested_quantity =  $withdraw->requested_quantity;
-        $this->dispatch('open-modal');
     }
 
     public function mount()

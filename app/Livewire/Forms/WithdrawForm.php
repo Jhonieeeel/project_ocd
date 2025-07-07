@@ -7,8 +7,12 @@ use Livewire\Form;
 
 class WithdrawForm extends Form
 {
+
     #[Validate(['nullable', 'min:2'])]
     public $ris;
+
+    #[Validate(['nullable', 'min:2'])]
+    public $remarks;
 
     #[Validate(['nullable', 'exists:users,id'])]
     public $requested_by;
@@ -22,12 +26,10 @@ class WithdrawForm extends Form
     #[Validate(['nullable', 'exists:users,id'])]
     public $received_by;
 
-    #[Validate('boolean')]
-    public $status;
-
-    #[Validate(['nullable', 'min:2'])]
+    #[Validate(['nullable', 'exists:stocks,id'])]
     public $stock_id;
 
-    #[Validate(['nullable', 'min:2'])]
-    public $remarks;
+    #[Validate(['required', 'integer', 'min:1'])]
+    public $requested_quantity;
+    
 }
