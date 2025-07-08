@@ -13,13 +13,13 @@ class StockForm extends Form
     #[Validate(['required', 'decimal:0,2'])]
     public $item_price;
 
-    #[Validate(['required', 'integer'])]
+    #[Validate(['required', 'integer', 'min:1'])]
     public $item_quantity;
 
-    #[Validate(['required'])]
+    #[Validate(['required', 'min:1'])]
     public $remarks;
 
-    #[Validate(['required'])]
+    #[Validate(['required', 'min:1'])]
     public $expiration;
 
     #[Validate(['required', 'exists:supplies,id'])]

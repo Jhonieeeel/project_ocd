@@ -17,6 +17,11 @@ class Withdraw extends Model
         'stock_id',
         'user_id',
     ];
+    public function approvedWithdraw()
+    {
+        return $this->hasMany(ApprovedWithdraw::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

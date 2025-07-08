@@ -8,17 +8,14 @@ use Livewire\Form;
 class SupplyForm extends Form
 {
     #[Validate(['required', 'min:2'])]
-    public $item_description; 
+    public $item_description;
 
     #[Validate('required')]
-    public $category; 
+    public $category;
 
     #[Validate('required')]
     public $unit;
 
     #[Validate('nullable', 'image')]
     public $image;
-
-    #[Validate('required')]
-    public $supply_id;
 }

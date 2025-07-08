@@ -20,33 +20,35 @@ class DatabaseSeeder extends Seeder
 
         // super admin
         $super = User::factory()->create([
-            'name' => 'Super User',
+            'name' => 'Dave Madayag',
             'email' => 'super@example.com',
         ]);
 
         $admin = User::factory()->create([
-            'name' => 'Admin User',
+            'name' => 'Maam Mar',
             'email' => 'admin@example.com',
         ]);
 
-        $issueance = User::factory()->create([
-            'name' => 'Issuenace User',
+        $admin2 = User::factory()->create([
+            'name' => 'Sir Ray',
             'email' => 'issuenace@example.com',
         ]);
 
         $user = User::factory()->create([
-            'name' => 'Employee',
+            'name' => 'Mike Alsong',
             'email' => 'user@example.com',
         ]);
 
         Role::create(['name' => 'super-admin']);
         Role::create(['name' => 'admin']);
+        Role::create(['name' => 'issueance']);
         Role::create(['name' => 'user']);
 
         $super->assignRole('super-admin');
 
         $admin->assignRole('admin');
-        $issueance->assignRole('admin');
+        $admin2->assignRole('admin');
+        $admin2->assignRole('issueance');
 
         $user->assignRole('user');
 

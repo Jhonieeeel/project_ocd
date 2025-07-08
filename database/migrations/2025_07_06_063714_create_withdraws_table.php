@@ -19,6 +19,10 @@ return new class extends Migration
             $table->foreignId("approved_by")->nullable()->constrained('users');
             $table->foreignId("issued_by")->nullable()->constrained('users');
             $table->foreignId("received_by")->nullable()->constrained('users');
+            $table->date("approved_date")->nullable();
+            $table->date("requested_date")->nullable();
+            $table->date("received_date")->nullable();
+            $table->date("issued_date")->nullable();
             $table->foreignId("stock_id")->constrained()->cascadeOnDelete();
             $table->foreignId("user_id")->constrained()->cascadeOnDelete();
             $table->boolean('status')->default(false);

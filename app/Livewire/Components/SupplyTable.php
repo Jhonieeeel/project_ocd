@@ -37,14 +37,14 @@ class SupplyTable extends Component
 
         $imagePath = null;
 
-        if ($this->image) {
-            $imagePath = $this->image->store('supplies', 'public');
+        if ($this->supplyForm->image) {
+            $imagePath = $this->supplyForm->image->store('supplies', 'public');
         }
 
         Supply::create([
-            'item_description' => $this->item_description,
-            'category' => $this->category,
-            'unit' => $this->unit,
+            'item_description' => $this->supplyForm->item_description,
+            'category' => $this->supplyForm->category,
+            'unit' => $this->supplyForm->unit,
             'image' => $imagePath,
         ]);
 

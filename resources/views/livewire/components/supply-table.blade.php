@@ -15,7 +15,7 @@
                             </div>
                             <div class="sm:flex items-center gap-x-3">
                                 <button x-data x-on:click='$dispatch("open-supply-form")' type="button"
-                                    class="text-sm bg-green-500 px-3 py-2 hover:bg-green-600 transition-all duration-200 text-white rounded shadow-sm">
+                                    class="text-sm bg-green-500 px-4 py-2 hover:bg-green-600 transition-all duration-200 text-white rounded shadow-sm">
                                     Add Supply
                                 </button>
                             </div>
@@ -54,6 +54,9 @@
                                 <th scope="col"
                                     class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
                                     Unit</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
+                                    Date Added</th>
 
                                 <th scope="col" colspan="2"
                                     class="px-6 py-3 text-end text-xs font-medium uppercase text-gray-50">
@@ -75,20 +78,23 @@
                                     class="whitespace-nowrap px-6 py-4 text-sm font-medium capitalize text-gray-800">
                                     {{ $supply->item_description }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                                <td class="whitespace-nowrap px-6 capitalize py-4 text-sm text-gray-800">
                                     {{ $supply->category }}
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 capitalize text-sm text-gray-800">
                                     {{ $supply->unit }}
                                 </td>
+                                <td class="whitespace-nowrap px-6 py-4 capitalize text-xs text-gray-500">
+                                    {{ $supply->created_at->format('m-d-Y') }}
+                                </td>
                                 <td
                                     class="items-center whitespace-nowrap px-6 py-4 text-end text-sm font-medium sm:flex sm:justify-end sm:gap-x-2 xl:gap-x-3">
 
                                     <button wire:click="addStock({{ $supply }})"
-                                        class="text-green-600 hover:text-green-800">Add to Stock</button>
+                                        class="text-green-600 text-xs  hover:text-green-800">Add to Stock</button>
 
                                     <button type="button"
-                                        class="focus:outline-hidden inline-flex items-center gap-x-2 rounded-lg border border-transparent text-sm font-semibold text-red-600 hover:text-red-800 focus:text-red-800 disabled:pointer-events-none disabled:opacity-50">Delete</button>
+                                        class="focus:outline-hidden inline-flex items-center gap-x-2 rounded-lg border border-transparent text-xs font-semibold text-red-600 hover:text-red-800 focus:text-red-800 disabled:pointer-events-none disabled:opacity-50">Delete</button>
 
                                 </td>
                             </tr>
@@ -175,7 +181,7 @@
                     @enderror
                 </div>
                 <div class="sm:my-5 sm:flex justify-end items-center">
-                    <button class="mt-4 text-sm text-green-600 hover:font-medium">Add Stock</button>
+                    <button class="mt-4 text-sm px-4 py-2 rounded transition-all duration-300 bg-green-600 hover:bg-green-800 text-white">Add Stock</button>
                 </div>
             </form>
         </div>
@@ -190,22 +196,30 @@
         <!-- Modal Content -->
         <div
             class="fixed left-1/2 top-10 w-full max-w-md -translate-x-1/2 rounded bg-white p-4 shadow-lg sm:px-5 sm:py-9 xl:max-w-lg">
-            <h4 class="pb-4 text-xl font-semibold">Add Stock</h4>
+            <div class="sm:flex items-center justify-between py-2">
+                <h4 class="text-xl font-semibold">Add Stock</h4>
+                <button type="button" @click="$dispatch('close-modal')" class="text-white bg-red-600 hover:bg-red-800 rounded transition-all duration-300 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </div>
 
             {{-- forms --}}
             <form wire:submit.prevent="saveStock" class="mt-4 space-y-2">
                 <input type="hidden" wire:model="stockForm.supply_id" />
                 @error('stockForm.supply_id')
-                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                 @enderror
-                <div class="items-center justify-between rounded border border-green-500 bg-green-200 p-4 sm:flex">
+                <div class="items-center justify-between rounded border border-green-500 bg-green-50 p-4 sm:flex">
                     <div>
                         <small class="text-xs text-gray-600">Item Description</small>
                         <p class="text-lg font-semibold text-gray-800">{{ $selectedSupply->item_description }}</p>
                     </div>
                     <div>
                         <small class="text-xs text-gray-600">Category</small>
-                        <p class="text-lg font-semibold text-gray-800">{{ $selectedSupply->category }}</p>
+                        <p class="text-lg font-semibold text-gray-800 capitalize">{{ $selectedSupply->category }}</p>
                     </div>
                     <div>
                         <small class="text-xs text-gray-600">Unit</small>
@@ -213,21 +227,21 @@
                     </div>
                 </div>
                 {{-- inputs --}}
-                <div>
+                <div class="pt-4">
                     <x-input-label for="barcode" :value="__('Barcode')" />
                     <x-text-input id="barcode" type="text" wire:model="stockForm.barcode"
                         autocomplete="off" class="w-full" required autofocus />
                     @error('stockForm.barcode')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="sm:flex sm:items-center sm:gap-x-2">
+                <div class="sm:flex sm:items-center sm:gap-x-5">
                     <div>
                         <x-input-label for="item_quantity" :value="__('Item Quantity')" />
                         <x-text-input id="item_quantity" type="number" wire:model="stockForm.item_quantity"
                             class="w-full" required autofocus />
                         @error('stockForm.item_quantity')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
@@ -235,7 +249,7 @@
                         <x-text-input step="0.01" id="item_price" type="number"
                             wire:model="stockForm.item_price" class="w-full" required autofocus />
                         @error('stockForm.item_price')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -244,7 +258,7 @@
                     <x-text-input id="expiration" type="text" autocomplete="off"
                         wire:model="stockForm.expiration" class="w-full" required autofocus />
                     @error('stockForm.expiration')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
@@ -252,17 +266,11 @@
                     <x-text-input id="remarks" type="text" autocomplete="off"
                         wire:model="stockForm.remarks" class="w-full" required autofocus />
                     @error('stockForm.remarks')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-                <p wire:loading>
-                    Loading....
-                </p>
                 <div class="sm:flex sm:items-center sm:justify-end sm:gap-x-5">
-                    <button @click="$dispatch('close-modal')" class="mt-4 text-sm text-red-500 hover:font-medium">
-                        Close
-                    </button>
-                    <button class="mt-4 text-sm text-green-600 hover:font-medium">
+                    <button class="mt-4 text-sm px-4 py-2 bg-green-600 hover:bg-green-800 text-white rounded transition-all duration-300">
                         Add Stock
                     </button>
                 </div>
