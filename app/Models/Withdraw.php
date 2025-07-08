@@ -17,6 +17,14 @@ class Withdraw extends Model
         'stock_id',
         'user_id',
     ];
+
+    protected $casts = [
+        'requested_by' => 'integer',
+        'approved_by'  => 'integer',
+        'issued_by'    => 'integer',
+        'received_by'  => 'integer',
+    ];
+    
     public function approvedWithdraw()
     {
         return $this->hasMany(ApprovedWithdraw::class);
@@ -51,4 +59,39 @@ class Withdraw extends Model
     {
         return $this->belongsTo(User::class, 'received_by');
     }
+
+
+    // mutator
+    public function setRequestedByAttribute($attributeValue) {
+        $this->attributes['requested_by'] = $attributeValue;
+
+        if($attributeValue) {
+            $this->attributes['requested_date'] = now()->toDateString();
+        }
+    }
+
+    public function setApprovedByAttribute($attributeValue) {
+        $this->attributes['approved_by'] = $attributeValue;
+
+        if($attributeValue) {
+            $this->attributes['approved_date'] = now()->toDateString();
+        }
+    }
+
+    public function setIssuedByAttribute($attributeValue) {
+        $this->attributes['issued_by'] = $attributeValue;
+
+        if ($attributeValue) {
+            $this->attributes['issued_date'] = now()->toDateString();
+        }
+    }
+
+    public function setReceivedByAttribute($attributeValue) {
+        $this->attributes['received_by'] = $attributeValue;
+
+        if ($attributeValue) {
+            $this->attributes['received_date'] = now()->toDateString();
+        }
+    }
+    
 }

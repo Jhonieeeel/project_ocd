@@ -34,6 +34,16 @@ class DatabaseSeeder extends Seeder
             'email' => 'issuenace@example.com',
         ]);
 
+        $admin3 = User::factory()->create([
+            'name' => 'Sir Rocky',
+            'email' => 'rocky@example.com',
+        ]);
+
+        $admin4 = User::factory()->create([
+            'name' => 'Sir Carilito',
+            'email' => 'carlito@example.com',
+        ]);
+
         $user = User::factory()->create([
             'name' => 'Mike Alsong',
             'email' => 'user@example.com',
@@ -48,6 +58,8 @@ class DatabaseSeeder extends Seeder
 
         $admin->assignRole('admin');
         $admin2->assignRole('admin');
+        $admin3->assignRole('admin');
+        $admin4->assignRole('admin');
         $admin2->assignRole('issueance');
 
         $user->assignRole('user');

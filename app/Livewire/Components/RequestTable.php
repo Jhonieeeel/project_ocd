@@ -14,60 +14,24 @@ use PhpOffice\PhpWord\TemplateProcessor;
 
 class RequestTable extends Component
 {
-    public $item_quantity;
-    public $requested_quantity;
-    public $stock_id;
-    public $max_quantity;
 
     public WithdrawForm $withdrawForm;
     public Withdraw $selectedRequest;
-
-
-
-    public $approverName;
-    public $issueanceName;
-
-    public $approved_date;
-    public $issued_date;
-    public $requested_date;
-    public $received_date;
-    public $status = false;
 
     public $printWithdraw;
 
     public function viewRequest(Withdraw $withdraw)
     {
         $this->selectedRequest = $withdraw;
-        $this->max_quantity = $withdraw->item_quantity;
-        $this->withdrawForm->stock_id = $withdraw->stock_id;
-        $this->withdrawForm->requested_by = $withdraw->requested_by;
-        $this->withdrawForm->received_by = $withdraw->received_by;
-        $this->withdrawForm->requested_quantity = $withdraw->requested_quantity;
+        $this->withdrawForm->fill($withdraw->toArray());
 
-        // status
-        $this->withdrawForm->status = $withdraw->status ? true : false;
-
-        // names
-        $this->approverName = $withdraw->approvedBy?->name;
-        $this->issueanceName = $withdraw->issuedBy?->name;
-
-        // dates
-        $this->approved_date = $withdraw->approved_date;
-        $this->issued_date = $withdraw->issued_date;
-        $this->requested_date = $withdraw->requested_date;
-        $this->received_date = $withdraw->received_date;
         $this->dispatch('open-modal');
     }
 
     #[Computed()]
     public function approveUsers()
     {
-        if ($this->selectedRequest) {
-            return User::where('id', '!=', $this->selectedRequest->user->id)->get();
-        } else {
-            return User::where('name', '!=', $this->approverName)->get();
-        }
-        return collect();
+        return User::where('id', '!=', $this->withdrawForm->user_id)->get();
     }
 
     #[Computed()]
@@ -79,9 +43,9 @@ class RequestTable extends Component
     #[Computed()]
     public function requestAndReceive()
     {
-        if ($this->selectedRequest) {
+        if ($this->withdrawForm->requested_by) {
 
-            return Withdraw::where('requested_by', $this->selectedRequest->requested_by)
+            return Withdraw::where('requested_by', $this->withdrawForm->requested_by)
                 ->with('requestedBy')
                 ->get();
         }
@@ -94,34 +58,22 @@ class RequestTable extends Component
             'requested_quantity' => ['required', 'integer', 'min:1', 'max:' . $this->selectedRequest->stock->item_quantity],
         ]);
 
-        $this->withdrawForm->validate();
+        $validated = $this->withdrawForm->validate();
 
-        $id = $this->withdrawForm->stock_id;
+        $withdraw = Withdraw::find($this->selectedRequest->id);
 
-        $withdraw = Withdraw::find($id);
-
-        if (!$withdraw->status) {
-            $withdraw->status = ($this->withdrawForm->approved_by && $this->withdrawForm->issued_by);
-        } else {
-            $withdraw->status = false;
-        }
-
-        $withdraw->requested_quantity = $this->withdrawForm->requested_quantity;
-        $withdraw->approved_by = $this->withdrawForm->approved_by;
-        $withdraw->issued_by = $this->withdrawForm->issued_by;
-        $withdraw->received_by = $this->withdrawForm->requested_by;
-        $withdraw->requested_by = $this->withdrawForm->requested_by;
-
-        // date
-        $withdraw->requested_date = ($this->withdrawForm->requested_by ? now()->toDateString() : null);
-        $withdraw->received_date = ($this->withdrawForm->received_by ? now()->toDateString() : null);
-        $withdraw->approved_date = ($this->withdrawForm->approved_by ? now()->toDateString() : null);
-        $withdraw->issued_date = ($this->withdrawForm->issued_by ? now()->toDateString() : null);
-
-        $withdraw->save();
+        $withdraw->update([
+            'requested_quantity' => $validated['requested_quantity'],
+            'approved_by' => (int) $validated['approved_by'] ?: null,
+            'issued_by' => (int) $validated['issued_by'] ?: null,
+            'received_by' => (int) $validated['received_by'] ?: null,
+            'requested_by' => (int) $validated['requested_by'] ?: null,
+            'status' => ($validated['approved_by'] && $validated['issued_by'] && $validated['received_by'] && $validated['requested_by'])
+        ]);
 
         return redirect()->route('request-list');
     }
+
 
     public function success($withdraw_id)
     {
@@ -182,11 +134,6 @@ class RequestTable extends Component
     {
         $withdraw->delete();
         $this->dispatch('close-modal');
-    }
-
-    public function mount()
-    {
-        $this->selectedRequest = Withdraw::first() ?? new Withdraw();
     }
 
     #[Computed()]
