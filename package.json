@@ -19,5 +19,8 @@
         "prettier-plugin-tailwindcss": "^0.6.13",
         "tailwindcss": "^3.1.0",
         "vite": "^6.2.4"
+    },
+    "dependencies": {
+        "docx-pdf": "^0.0.1"
     }
 }

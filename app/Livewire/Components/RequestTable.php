@@ -8,12 +8,17 @@ use App\Models\User;
 use App\Models\Withdraw;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use NcJoes\OfficeConverter\OfficeConverter;
+use PhpOffice\PhpWord\TemplateProcessor;
+
 
 use PhpOffice\PhpWord\PhpWord;
-use PhpOffice\PhpWord\TemplateProcessor;
+use Barryvdh\DomPDF\Facade as PDF;
+use PhpOffice\PhpWord\Metadata\Settings;
 
 class RequestTable extends Component
 {
+    // use Printing;
 
     public WithdrawForm $withdrawForm;
     public Withdraw $selectedRequest;
@@ -31,7 +36,7 @@ class RequestTable extends Component
     #[Computed()]
     public function approveUsers()
     {
-        return User::where('id', '!=', $this->withdrawForm->user_id)->get();
+        return User::where('id', '!=', $this->withdrawForm->requested_by)->get();
     }
 
     #[Computed()]
@@ -63,6 +68,7 @@ class RequestTable extends Component
         $withdraw = Withdraw::find($this->selectedRequest->id);
 
         $withdraw->update([
+            'ris' => $validated['ris'],
             'requested_quantity' => $validated['requested_quantity'],
             'approved_by' => (int) $validated['approved_by'] ?: null,
             'issued_by' => (int) $validated['issued_by'] ?: null,
@@ -70,9 +76,8 @@ class RequestTable extends Component
             'requested_by' => (int) $validated['requested_by'] ?: null,
             'status' => ($validated['approved_by'] && $validated['issued_by'] && $validated['received_by'] && $validated['requested_by'])
         ]);
-
-        return redirect()->route('request-list');
     }
+
 
 
     public function success($withdraw_id)
@@ -88,6 +93,7 @@ class RequestTable extends Component
         if ($approvedWithdraw) {
             $approvedWithdraw->printed_times += 1;
             $approvedWithdraw->save();
+
             session()->flash('printed_created', "Item Printed Successfully");
         } else {
             ApprovedWithdraw::create([
@@ -96,36 +102,39 @@ class RequestTable extends Component
             ]);
         }
 
-        $ris_docs = new TemplateProcessor(public_path('docs/ris.docx'));
-        dd($ris_docs->getVariables());
-        $ris_docs->setValue('entity_name', 'John');
-        $ris_docs->setValue('fund_cluster ', 'Find Cluster');
-        $ris_docs->setValue('division', 'Division ');
-        $ris_docs->setValue('res_code ', 'Responsibility Code');
-        $ris_docs->setValue('office ', 'Office');
-        $ris_docs->setValue('ris_no ', 'RIS No.');
+        // PDF CONVERSION
+        $inputPath = public_path('docs/ris.docx');
+        $outputPath = public_path('docs');
+        $pdfFile = $outputPath . '/ris.pdf'; // Output filename LibreOffice will generate
 
-        $ris_docs->cloneRowAndSetValues('stock_no', [
-            [
-                'stock_no' => $approvedWithdraw->withdraw->stock->barcode,
-                'unit' => $approvedWithdraw->withdraw->stock->supply->unit,
-                'item' => $approvedWithdraw->withdraw->stock->supply->item_description,
-                'req_qty' => $approvedWithdraw->withdraw->requested_quantity,
-                'yes' => '',
-                'no' => '',
-                'issue_qty' => '',
-                'remarks' => $approvedWithdraw->withdraw->remarks,
-                'purpose' => '',
-                'req_by' => $approvedWithdraw->withdraw->requestedBy->name,
-                'approved_by' => $approvedWithdraw->withdraw->approvedBy->name,
-                'issue_by' => $approvedWithdraw->withdraw->issuedBy->name,
-                'received_by' => $approvedWithdraw->withdraw->receivedBy->name,
-                'designation' => ''
-            ]
-        ]);
-        // Printing functions here
-        $docs_path = public_path('ris_docs/generated_ris.docx');
-        $ris_docs->saveAs($docs_path);
+        // Ensure HOME is set (important for Windows + LibreOffice)
+        if (!getenv('HOME')) {
+            putenv('HOME=' . storage_path());
+        }
+
+        // Properly quoted path to handle spaces in "Program Files"
+        $libreOfficePath = '"C:\\Program Files\\LibreOffice\\program\\soffice.exe"';
+
+        // Build and run the conversion command
+        $command = "{$libreOfficePath} --headless --convert-to pdf \"{$inputPath}\" --outdir \"{$outputPath}\"";
+        exec($command . ' 2>&1', $output, $returnCode);
+
+        // Debug output if needed:
+        // dd(['cmd' => $command, 'output' => $output, 'return_code' => $returnCode]);
+
+        if (file_exists($pdfFile)) {
+            // Dispatch event to open/print the PDF in the browser
+            $this->dispatch('print-docs', [
+                'url' => asset('docs/ris.pdf'),
+            ]);
+        } else {
+            $this->dispatch('print-docs', [
+                'url' => null,
+                'error' => 'PDF conversion failed.',
+                'details' => $output,
+            ]);
+        }
+
 
         session()->flash('printed_created', "New print record added");
     }
