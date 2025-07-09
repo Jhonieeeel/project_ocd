@@ -23,11 +23,7 @@ class StockTable extends Component
 
     public function selectEditStock(Stock $stock)
     {
-        $this->stockForm->barcode = $stock->barcode;
-        $this->stockForm->item_price = $stock->item_price;
-        $this->stockForm->item_quantity = $stock->item_quantity;
-        $this->stockForm->remarks = $stock->remarks;
-        $this->stockForm->expiration = $stock->expiration;
+        $this->stockForm->fill($stock->toArray());
         $this->dispatch('open-edit-modal');
     }
 
@@ -36,38 +32,39 @@ class StockTable extends Component
         dd($this->validate());
     }
 
-    public function addRequest(Stock $stock)
+    public function addRequest($id)
     {
+        $stock = Stock::findOrFail($id);
         $this->selectedStock = $stock;
-        $this->max_quantity = $stock->item_quantity;
-        $this->withdrawForm->stock_id = $stock->id;
-        $this->user_id = auth()->id();
-
+        $this->withdrawForm->fill([
+            'stock_id' => $stock->id,
+            'user_id' => auth()->id(),
+            'requested_quantity' => 0,
+        ]);
         $this->dispatch('open-modal');
     }
 
     public function saveRequest()
     {
-        $currentRequest = Withdraw::where('stock_id', $this->selectedStock->id)->first();
-        $validated = $this->validate([
-            'requested_quantity' => ['required', 'integer', 'min:1', 'max:' . $this->max_quantity],
+        $this->withdrawForm->validate([
+            'requested_quantity' => 'required|integer|min:1|max:' . $this->selectedStock->item_quantity,
+            'stock_id' => 'required|exists:stocks,id',
+            'user_id' => 'required|exists:users,id',
         ]);
 
-        if ($currentRequest) {
-            $currentRequest->requested_quantity += $validated['requested_quantity'];
-            $currentRequest->save();
-
-            return redirect()->route('my-request-list');
+        $userRequest = Withdraw::where('user_id', auth()->id())
+            ->where('stock_id', $this->withdrawForm->stock_id)
+            ->first();
+        if ($userRequest) {
+            $userRequest->requested_quantity += $this->withdrawForm->requested_quantity;
+            $userRequest->save();
+        } else {
+            Withdraw::create([
+                'stock_id' => $this->withdrawForm->stock_id,
+                'user_id' => $this->withdrawForm->user_id,
+                'requested_quantity' => $this->withdrawForm->requested_quantity,
+            ]);
         }
-
-        // dd($this->requested_quantity, $this->user_id, $this->stock_id);
-        Withdraw::create([
-            'requested_quantity' => $validated['requested_quantity'],
-            'requested_by' => auth()->id(),
-            'received_by' => auth()->id(),
-            'stock_id' => $this->withdrawForm->stock_id,
-            'user_id' => auth()->id()
-        ]);
 
 
         return redirect()->route('my-request-list')->with('requested', 'Stock added to request.');

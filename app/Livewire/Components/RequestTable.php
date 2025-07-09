@@ -9,11 +9,13 @@ use App\Models\Withdraw;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
-use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\TemplateProcessor;
+use Spatie\Permission\Models\Role;
 
 class RequestTable extends Component
 {
+    public $roles;
+    public $users;
 
     public WithdrawForm $withdrawForm;
     public Withdraw $selectedRequest;
@@ -41,15 +43,14 @@ class RequestTable extends Component
     }
 
     #[Computed()]
-    public function requestAndReceive()
-    {
-        if ($this->withdrawForm->requested_by) {
+    public function userRoles() {
+        return Role::all();
+    }
 
-            return Withdraw::where('requested_by', $this->withdrawForm->requested_by)
-                ->with('requestedBy')
-                ->get();
-        }
-        return collect();
+    #[Computed()]
+    public function receivers()
+    {
+        return User::role($this->roles)->get();
     }
 
     public function update()
@@ -59,15 +60,15 @@ class RequestTable extends Component
         ]);
 
         $validated = $this->withdrawForm->validate();
-
+        
         $withdraw = Withdraw::find($this->selectedRequest->id);
 
         $withdraw->update([
-            'requested_quantity' => $validated['requested_quantity'],
+            'ris' => $validated['ris'],
+            'requested_quantity' => (int) $validated['requested_quantity'],
             'approved_by' => (int) $validated['approved_by'] ?: null,
             'issued_by' => (int) $validated['issued_by'] ?: null,
             'received_by' => (int) $validated['received_by'] ?: null,
-            'requested_by' => (int) $validated['requested_by'] ?: null,
             'status' => ($validated['approved_by'] && $validated['issued_by'] && $validated['received_by'] && $validated['requested_by'])
         ]);
 

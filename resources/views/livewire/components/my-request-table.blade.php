@@ -21,7 +21,7 @@
                     </div>
 
                     <a href="{{ route('stocks') }}"
-                        class="relative hidden transition-all duration-300  p-2 sm:flex sm:items-center sm:gap-x-2 hover:text-orange-500">
+                        class="relative hidden p-2 transition-all duration-300 hover:text-orange-500 sm:flex sm:items-center sm:gap-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" class="lucide lucide-box-icon lucide-box">
@@ -32,7 +32,7 @@
                         </svg>
 
                         <!-- Label Text -->
-                        <span class="hidden text-sm  sm:block">View Stocks</span>
+                        <span class="hidden text-sm sm:block">View Stocks</span>
                     </a>
                 </div {{-- table --}} <div class="overflow-hidden shadow">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -79,21 +79,25 @@
                                 </td>
 
                                 <td
-                                    class="whitespace-nowrap px-6 py-4 text-sm {{ $request->requestedBy ? 'text-gray-800' : 'text-gray-400' }}">
-                                    {{ auth()->user()->id === $request->requestedBy->name ? 'You' : $request->requestedBy->name }}
+                                    class="{{ $request->user_id === auth()->id() ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-sm">
+                                    {{ $request->user_id === auth()->id() ? 'You' : $request->requestedBy?->name ?? 'Unknown' }}
                                 </td>
+
                                 <td
-                                    class="whitespace-nowrap px-6 py-4 text-sm {{ $request->approvedBy ? 'text-gray-800' : 'text-gray-400' }}">
+                                    class="{{ $request->approved_by ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-sm">
                                     {{ $request->approvedBy ? $request->approvedBy->name : 'Pending' }}
                                 </td>
+
                                 <td
-                                    class="whitespace-nowrap px-6 py-4 text-sm {{ $request->issuedBy ? 'text-gray-800' : 'text-gray-400' }}">
+                                    class="{{ $request->issued_by ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-sm">
                                     {{ $request->issuedBy ? $request->issuedBy->name : 'Pending' }}
                                 </td>
+
                                 <td
-                                    class="whitespace-nowrap px-6 py-4 text-sm {{ $request->receivedBy ? 'text-gray-800' : 'text-gray-400' }}">
+                                    class="{{ $request->received_by ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-sm">
                                     {{ $request->receivedBy ? $request->receivedBy->name : 'Pending' }}
                                 </td>
+
                                 <td colspan="2"
                                     class="items-center whitespace-nowrap px-6 py-4 text-end text-sm font-medium sm:flex sm:justify-start sm:gap-x-2 xl:gap-x-3">
                                     <button wire:click="selectEdit({{ $request }})"
@@ -136,37 +140,37 @@
                 <div class="space-y-4">
                     <input type="hidden" wire:model="stock_id" />
                     <input type="hidden" wire:model="user_id" />
-                    <div class="sm:flex xl:gap-x-6 gap-x-3 p-4 items-center w-full bg-green-100">
+                    <div class="w-full items-center gap-x-3 bg-green-100 p-4 sm:flex xl:gap-x-6">
                         <div class="">
-                            <small class="text-gray-500 text-xs">Item Description</small>
-                            <p class="text-lg font-semibold  capitalize text-gray-800">
+                            <small class="text-xs text-gray-500">Item Description</small>
+                            <p class="text-lg font-semibold capitalize text-gray-800">
                                 {{ $selectedEdit->stock?->supply->item_description }}
                             </p>
                         </div>
                         <div class="">
-                            <small class="text-gray-500 text-xs">Requested Quantity</small>
-                            <p class="text-lg font-semibold  capitalize text-gray-800">
+                            <small class="text-xs text-gray-500">Requested Quantity</small>
+                            <p class="text-lg font-semibold capitalize text-gray-800">
                                 {{ $selectedEdit->requested_quantity }}
                             </p>
                         </div>
                     </div>
                     <div class="sm:pb-2">
-                        <small for="requested_quantity" class=" text-gray-400 block pb-2 text-xs">Request Qty</small>
+                        <small for="requested_quantity" class="block pb-2 text-xs text-gray-400">Request Qty</small>
                         <input type="number" wire:model="requested_quantity" placeholder="0" min=0
                             max={{ $selectedEdit->item_quantity }} id="requested_quantity"
-                            class="sm:w-54 sm:h-10 rounded border-gray-400 focus:ring-orange-500 focus:border-orange-500">
+                            class="sm:w-54 rounded border-gray-400 focus:border-orange-500 focus:ring-orange-500 sm:h-10">
                         <x-input-error :messages="$errors->get('requested_quantity')" class="mt-2" />
                         @error('requested_quantity')
-                            <span class="text-red-500 block sm:mt-2 text-sm">{{ $message }}</span>
+                            <span class="block text-sm text-red-500 sm:mt-2">{{ $message }}</span>
                         @enderror
                     </div>
                     <hr>
                 </div>
-                <div class="sm:flex justify-end sm:items-center sm:gap-3 py-3">
+                <div class="justify-end py-3 sm:flex sm:items-center sm:gap-3">
                     <button type="button" x-on:click="$dispatch('close-edit-modal')"
-                        class=" text-red-600 hover:text-red-700 hover:font-medium text-sm">Cancel</button>
+                        class="text-sm text-red-600 hover:font-medium hover:text-red-700">Cancel</button>
                     <button wire:click="update"
-                        class="text-green-600 hover:text-green-700 hover:font-medium text-sm">Request</button>
+                        class="text-sm text-green-600 hover:font-medium hover:text-green-700">Request</button>
                 </div>
             </form>
         </div>

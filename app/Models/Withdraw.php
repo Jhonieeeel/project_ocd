@@ -86,6 +86,16 @@ class Withdraw extends Model
         }
     }
 
+    public function setUserIdAttribute($attributeValue)
+    {
+        $this->attributes['user_id'] = $attributeValue;
+
+        // Optional: remove this if using saving() instead
+        if (!is_null($attributeValue)) {
+            $this->attributes['requested_by'] = $attributeValue;
+        }
+    }
+
     public function setReceivedByAttribute($attributeValue) {
         $this->attributes['received_by'] = $attributeValue;
 
