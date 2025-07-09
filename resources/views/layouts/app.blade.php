@@ -34,7 +34,28 @@
          </main>
      </div>
      @livewireScripts
+     <script>
+         Livewire.on('print-docs', (data) => {
+             const pdf = data[0].url;
+
+
+             if (pdf) {
+                 const win = window.open(pdf, '_blank');
+                 if (win) {
+                     win.onload = () => {
+                         win.focus();
+                         win.print();
+                         console.log("Window")
+                     };
+                 } else {
+                     alert('Popup blocked! Please allow popups for this site.');
+                 }
+             } else {
+                 alert('PDF URL not available.');
+                 console.error(data.error ?? 'Unknown error');
+             }
+         });
+     </script>
  </body>
 
  </html>
-

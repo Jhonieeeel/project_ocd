@@ -20,44 +20,44 @@
                         </div>
                     </div>
                     @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
-                        <a href="{{ route('my-request-list') }}"
-                            class="relative hidden p-2 transition-all duration-300 hover:text-orange-500 sm:flex sm:items-center sm:gap-x-2">
-                            <!-- Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-archive-icon lucide-archive">
-                                <rect width="20" height="5" x="2" y="3" rx="1" />
-                                <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
-                                <path d="M10 12h4" />
-                            </svg>
+                    <a href="{{ route('my-request-list') }}"
+                        class="relative hidden p-2 transition-all duration-300 hover:text-orange-500 sm:flex sm:items-center sm:gap-x-2">
+                        <!-- Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-archive-icon lucide-archive">
+                            <rect width="20" height="5" x="2" y="3" rx="1" />
+                            <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+                            <path d="M10 12h4" />
+                        </svg>
 
-                            <!-- Label Text -->
-                            <span class="hidden text-sm sm:block">My Requests</span>
+                        <!-- Label Text -->
+                        <span class="hidden text-sm sm:block">My Requests</span>
 
-                            <!-- Notification Circle -->
-                            <span
-                                class="absolute left-5 top-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
-                                {{ $requests }}
-                            </span>
-                        </a>
+                        <!-- Notification Circle -->
+                        <span
+                            class="absolute left-5 top-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
+                            {{ $requests }}
+                        </span>
+                    </a>
                     @else
-                        <a href="{{ route('my-request-list') }}"
-                            class="relative hidden p-2 transition-all duration-300 hover:text-orange-500 sm:flex sm:items-center sm:gap-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-archive-icon lucide-archive">
-                                <rect width="20" height="5" x="2" y="3" rx="1" />
-                                <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
-                                <path d="M10 12h4" />
-                            </svg>
+                    <a href="{{ route('my-request-list') }}"
+                        class="relative hidden p-2 transition-all duration-300 hover:text-orange-500 sm:flex sm:items-center sm:gap-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-archive-icon lucide-archive">
+                            <rect width="20" height="5" x="2" y="3" rx="1" />
+                            <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+                            <path d="M10 12h4" />
+                        </svg>
 
-                            <!-- Label Text -->
-                            <span class="hidden text-sm sm:block">My Requests</span>
-                            <span
-                                class="absolute left-5 top-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
-                                {{ auth()->user()->withdraw()->count() }}
-                            </span>
-                        </a>
+                        <!-- Label Text -->
+                        <span class="hidden text-sm sm:block">My Requests</span>
+                        <span
+                            class="absolute left-5 top-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
+                            {{ auth()->user()->withdraw()->count() }}
+                        </span>
+                    </a>
                     @endif
                 </div>
                 <div class="overflow-hidden shadow">
@@ -86,27 +86,28 @@
                                     class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-50">
                                     Received by</th>
                                 @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
-                                    <th scope="col" colspan="2"
-                                        class="px-6 py-3 text-end text-xs font-medium uppercase text-gray-50">
-                                        Action</th>
+                                <th scope="col" colspan="2"
+                                    class="px-6 py-3 text-end text-xs font-medium uppercase text-gray-50">
+                                    Action</th>
                                 @endif
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @forelse($this->requests as $request)
-                                <tr class="w-full">
-                                    <td
-                                        class="whitespace-nowrap px-6 py-4 text-xs font-medium capitalize text-gray-800">
-                                        {{ $request->stock->barcode }}
-                                    </td>
-                                    <td
-                                        class="whitespace-nowrap px-6 py-4 text-xs font-medium capitalize text-gray-800">
-                                        {{ $request->stock->supply->item_description }}
-                                    </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-xs text-gray-800">
-                                        {{ $request->requested_quantity }}
-                                    </td>
+                            <tr class="w-full">
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 text-xs font-medium capitalize text-gray-800">
+                                    {{ $request->stock->barcode }}
+                                </td>
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 text-xs font-medium capitalize text-gray-800">
+                                    {{ $request->stock->supply->item_description }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-xs text-gray-800">
+                                    {{ $request->requested_quantity }}
+                                </td>
 
+<<<<<<< HEAD
                                     <td
                                         class="{{ $request->requestedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
                                         {{-- {{ $request->requested_by === auth()->id() ? 'You' : $request->requestedBy?->name }} --}}
@@ -139,17 +140,48 @@
                                         </td>
                                     @endif
                                 </tr>
+=======
+                                <td
+                                    class="{{ $request->requestedBy ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-xs">
+                                    {{ auth()->user()->id === $request->requestedBy->name ? 'You' : $request->requestedBy->name }}
+                                </td>
+                                <td
+                                    class="{{ $request->approvedBy ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-xs">
+                                    {{ $request->approvedBy ? $request->approvedBy->name : 'Pending' }}
+                                </td>
+                                <td
+                                    class="{{ $request->issuedBy ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-xs">
+                                    {{ $request->issuedBy ? $request->issuedBy->name : 'Pending' }}
+                                </td>
+                                <td
+                                    class="{{ $request->receivedBy ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-xs">
+                                    {{ $request->receivedBy ? $request->receivedBy->name : 'Pending' }}
+                                </td>
+                                @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
+                                <td
+                                    class="items-center whitespace-nowrap px-6 py-4 text-end text-sm font-medium sm:flex sm:justify-end sm:gap-x-2 xl:gap-x-3">
+
+                                    <button wire:click="viewRequest({{ $request }})" type="button"
+                                        class="text-green-600 hover:text-green-800">
+                                        Edit
+                                    </button>
+                                    <button wire:click="success({{ $request->id }})"
+                                        {{ $request->status ? '' : 'disabled' }}
+                                        class="{{ $request->status ? 'text-orange-600 hover:text-orange-800' : 'text-gray-400 cursor-not-allowed' }}">Confirm</button>
+                                </td>
+                                @endif
+                            </tr>
+>>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
                             @empty
-                                <tr>
-                                    <td colspan="9" class="py-3 text-center text-sm text-gray-500">No requested items
-                                        yet.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="9" class="py-3 text-center text-sm text-gray-500">No requested items
+                                    yet.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-                {{-- pagination --}}
             </div>
             <div class="text-gray-700 xl:mt-6">
                 {{ $this->requests->links() }}
@@ -194,23 +226,28 @@
                             <x-text-input id="item_quantity" type="number"
                                 wire:model="withdrawForm.requested_quantity" class="w-full" required autofocus />
                             @error('withdrawForm.requested_quantity')
-                                <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
                     {{-- req, approve, issue, receive --}}
+<<<<<<< HEAD
                     <div class="w-full items-center gap-3 sm:grid sm:grid-cols-2">
+=======
+                    <div class=" w-full grid-cols-2 items-center gap-3 sm:grid">
+>>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
                         <div class="w-full">
                             <x-input-label for="approved_by" :value="__('Approved By')" />
                             <select wire:model="withdrawForm.approved_by" id="approved_by"
                                 class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200">
 
-                                <option value="">-- Select Approver --</option>
+                                <option value="{{ $this->withdrawForm?->approved_by }}">{{( $selectedRequest?->approvedBy?->name ? $selectedRequest?->approvedBy?->name : "-- Select Approver --") }}</option>
                                 @foreach ($this->approveUsers as $admin)
-                                    @if ($admin->hasAnyRole(['super-admin', 'admin']))
-                                        <option value="{{ $admin->id }}">{{ $admin->name }}</option>
-                                    @endif
+                                @if ($admin->hasAnyRole(['super-admin', 'admin']))
+                                <option value=" {{ $admin->id }}">{{ $admin->name }}</option>
+                                @endif
                                 @endforeach
+                                <option value="">To be decided</option>
                             </select>
 
                         </div>
@@ -220,9 +257,9 @@
                                 class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200">
                                 <option value=""> -- Select Issueance -- </option>
                                 @foreach ($this->issueanceUsers as $user)
-                                    <option value="{{ $user->id }}">
-                                        {{ $user->name }}
-                                    </option>
+                                <option value="{{ $user->id }}">
+                                    {{ $user->name }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -244,10 +281,17 @@
                                 required
                                 class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200">
                                 <option value=""> -- Select User -- </option>
+<<<<<<< HEAD
                                 @foreach ($this->receivers as $user)
                                     <option class="capitalize" value="{{ $user->id }}">
                                         {{ $user->name }}
                                     </option>
+=======
+                                @foreach ($this->requestAndReceive as $withdraw)
+                                <option value="{{ $withdraw->requested_by }}">
+                                    {{ $withdraw->requestedBy->name }}
+                                </option>
+>>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
                                 @endforeach
                             </select>
                         </div>
@@ -347,23 +391,33 @@
                     </div>
                     <div class="mt-2 w-full">
                         @if (session('printed_created'))
-                            <div class="items-center justify-center gap-x-4 sm:flex">
-                                <p class="px-4 text-xs text-green-600">{{ session('printed_created') }}</p>
-                                <button wire:click="printRIS({{ $printWithdraw?->id }})"
-                                    class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
-                                    Printed RIS</button>
-                            </div>
+                        <div class="items-center justify-center gap-x-4 sm:flex">
+                            <p class="px-4 text-xs text-green-600">{{ session('printed_created') }}</p>
+                            <button wire:click="printRIS({{ $printWithdraw?->id }})"
+                                class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
+                                Printed RIS</button>
+                        </div>
                         @else
+<<<<<<< HEAD
                             <div class="justify-center sm:flex">
                                 <button wire:click="printRIS({{ $printWithdraw?->id }})"
                                     class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
                                     Printed RIS</button>
                         @endif
+=======
+                        <div class="justify-center sm:flex">
+                            <button wire:click="printRIS({{ $printWithdraw?->id }})"
+                                class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
+                                Printed RIS</button>
+                            @endif
+                        </div>
+
+>>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
 
+
+</div>
