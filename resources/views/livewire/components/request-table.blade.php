@@ -107,10 +107,8 @@
                                     {{ $request->requested_quantity }}
                                 </td>
 
-<<<<<<< HEAD
                                     <td
                                         class="{{ $request->requestedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
-                                        {{-- {{ $request->requested_by === auth()->id() ? 'You' : $request->requestedBy?->name }} --}}
                                         {{ $request->requestedBy?->name ?? 'Pending' }}
 
                                     </td>
@@ -140,38 +138,6 @@
                                         </td>
                                     @endif
                                 </tr>
-=======
-                                <td
-                                    class="{{ $request->requestedBy ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-xs">
-                                    {{ auth()->user()->id === $request->requestedBy->name ? 'You' : $request->requestedBy->name }}
-                                </td>
-                                <td
-                                    class="{{ $request->approvedBy ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-xs">
-                                    {{ $request->approvedBy ? $request->approvedBy->name : 'Pending' }}
-                                </td>
-                                <td
-                                    class="{{ $request->issuedBy ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-xs">
-                                    {{ $request->issuedBy ? $request->issuedBy->name : 'Pending' }}
-                                </td>
-                                <td
-                                    class="{{ $request->receivedBy ? 'text-gray-800' : 'text-gray-400' }} whitespace-nowrap px-6 py-4 text-xs">
-                                    {{ $request->receivedBy ? $request->receivedBy->name : 'Pending' }}
-                                </td>
-                                @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
-                                <td
-                                    class="items-center whitespace-nowrap px-6 py-4 text-end text-sm font-medium sm:flex sm:justify-end sm:gap-x-2 xl:gap-x-3">
-
-                                    <button wire:click="viewRequest({{ $request }})" type="button"
-                                        class="text-green-600 hover:text-green-800">
-                                        Edit
-                                    </button>
-                                    <button wire:click="success({{ $request->id }})"
-                                        {{ $request->status ? '' : 'disabled' }}
-                                        class="{{ $request->status ? 'text-orange-600 hover:text-orange-800' : 'text-gray-400 cursor-not-allowed' }}">Confirm</button>
-                                </td>
-                                @endif
-                            </tr>
->>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
                             @empty
                             <tr>
                                 <td colspan="9" class="py-3 text-center text-sm text-gray-500">No requested items
@@ -231,11 +197,7 @@
                         </div>
                     </div>
                     {{-- req, approve, issue, receive --}}
-<<<<<<< HEAD
                     <div class="w-full items-center gap-3 sm:grid sm:grid-cols-2">
-=======
-                    <div class=" w-full grid-cols-2 items-center gap-3 sm:grid">
->>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
                         <div class="w-full">
                             <x-input-label for="approved_by" :value="__('Approved By')" />
                             <select wire:model="withdrawForm.approved_by" id="approved_by"
@@ -281,17 +243,10 @@
                                 required
                                 class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200">
                                 <option value=""> -- Select User -- </option>
-<<<<<<< HEAD
                                 @foreach ($this->receivers as $user)
                                     <option class="capitalize" value="{{ $user->id }}">
                                         {{ $user->name }}
                                     </option>
-=======
-                                @foreach ($this->requestAndReceive as $withdraw)
-                                <option value="{{ $withdraw->requested_by }}">
-                                    {{ $withdraw->requestedBy->name }}
-                                </option>
->>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
                                 @endforeach
                             </select>
                         </div>
@@ -398,26 +353,14 @@
                                 Printed RIS</button>
                         </div>
                         @else
-<<<<<<< HEAD
                             <div class="justify-center sm:flex">
                                 <button wire:click="printRIS({{ $printWithdraw?->id }})"
                                     class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
                                     Printed RIS</button>
                         @endif
-=======
-                        <div class="justify-center sm:flex">
-                            <button wire:click="printRIS({{ $printWithdraw?->id }})"
-                                class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
-                                Printed RIS</button>
-                            @endif
-                        </div>
-
->>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
 </div>

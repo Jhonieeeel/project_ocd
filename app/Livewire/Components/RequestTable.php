@@ -6,29 +6,15 @@ use App\Livewire\Forms\WithdrawForm;
 use App\Models\ApprovedWithdraw;
 use App\Models\User;
 use App\Models\Withdraw;
+use Spatie\Permission\Models\Role;
+
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use NcJoes\OfficeConverter\OfficeConverter;
-use PhpOffice\PhpWord\TemplateProcessor;
-
-
-<<<<<<< HEAD
-use PhpOffice\PhpWord\TemplateProcessor;
-use Spatie\Permission\Models\Role;
 
 class RequestTable extends Component
 {
     public $roles;
     public $users;
-=======
-use PhpOffice\PhpWord\PhpWord;
-use Barryvdh\DomPDF\Facade as PDF;
-use PhpOffice\PhpWord\Metadata\Settings;
-
-class RequestTable extends Component
-{
-    // use Printing;
->>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
 
     public WithdrawForm $withdrawForm;
     public Withdraw $selectedRequest;
@@ -78,16 +64,15 @@ class RequestTable extends Component
 
         $withdraw->update([
             'ris' => $validated['ris'],
-<<<<<<< HEAD
             'requested_quantity' => (int) $validated['requested_quantity'],
-=======
-            'requested_quantity' => $validated['requested_quantity'],
->>>>>>> 6193748fe6fc8a41b43940783ed5a35ef1f7a533
             'approved_by' => (int) $validated['approved_by'] ?: null,
             'issued_by' => (int) $validated['issued_by'] ?: null,
             'received_by' => (int) $validated['received_by'] ?: null,
             'status' => ($validated['approved_by'] && $validated['issued_by'] && $validated['received_by'] && $validated['requested_by'])
         ]);
+
+        session()->flash('withdraw_updated', "Withdraw Request Updated Successfully");
+        $this->dispatch('close-modal');
     }
 
 
