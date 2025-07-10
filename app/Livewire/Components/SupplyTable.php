@@ -7,7 +7,6 @@ use App\Livewire\Forms\SupplyForm;
 use App\Models\Stock;
 use App\Models\Supply;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -18,6 +17,7 @@ class SupplyTable extends Component
 
     public $categories = ['supplies', 'nfi', 'fuel', 'others'];
     public $units = ['pc', 'pack', 'sachet', 'unit', 'ream', 'box', 'set', 'meter', 'kg', 'bag', 'case', 'kit', 'lot', 'bucket', 'galon', 'crate', 'bottle',];
+    public $supplySearch;
 
     public SupplyForm $supplyForm;
     public StockForm $stockForm;
@@ -88,6 +88,10 @@ class SupplyTable extends Component
     #[Computed()]
     public function supplies()
     {
+        if ($this->supplySearch) {
+            return Supply::where('item_description', 'like', "%{$this->supplySearch}%")->get();
+        }
+
         return Supply::latest()->paginate(5);
     }
 

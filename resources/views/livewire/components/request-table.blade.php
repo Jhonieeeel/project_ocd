@@ -7,9 +7,9 @@
                 <div class="px-4 py-3 sm:flex sm:items-center sm:justify-between">
                     <div class="relative max-w-xs">
                         <label for="hs-table-search" class="sr-only">Search</label>
-                        <input type="text" name="hs-table-search" id="hs-table-search"
-                            class="shadow-2xs block w-full rounded-lg border-orange-400 px-3 py-1.5 ps-9 focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm"
-                            placeholder="Search for items">
+                        <input type="text" wire:model.live.debounce.300ms="requestSearch" name="hs-table-search" id="hs-table-search"
+                            class="shadow-2xs block w-full rounded-lg border-orange-400 px-3 py-1.5 ps-9 focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm"
+                            placeholder="Search item description">
                         <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                             <svg class="size-4 text-orange-400" xmlns="http://www.w3.org/2000/svg" width="24"
                                 height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -107,37 +107,37 @@
                                     {{ $request->requested_quantity }}
                                 </td>
 
-                                    <td
-                                        class="{{ $request->requestedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
-                                        {{ $request->requestedBy?->name ?? 'Pending' }}
+                                <td
+                                    class="{{ $request->requestedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
+                                    {{ $request->requestedBy?->name ?? 'Pending' }}
 
-                                    </td>
-                                    <td
-                                        class="{{ $request->approvedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
-                                        {{ $request->approvedBy?->name ?? 'Pending' }}
-                                    </td>
-                                    <td
-                                        class="{{ $request->issuedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
-                                        {{ $request->issuedBy?->name ?? 'Pending' }}
-                                    </td>
-                                    <td
-                                        class="{{ $request->receivedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
-                                        {{ $request->receivedBy?->name ?? 'Pending' }}
-                                    </td>
-                                    @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
-                                        <td
-                                            class="items-center whitespace-nowrap px-6 py-4 text-end text-sm font-medium sm:flex sm:justify-end sm:gap-x-2 xl:gap-x-3">
+                                </td>
+                                <td
+                                    class="{{ $request->approvedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
+                                    {{ $request->approvedBy?->name ?? 'Pending' }}
+                                </td>
+                                <td
+                                    class="{{ $request->issuedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
+                                    {{ $request->issuedBy?->name ?? 'Pending' }}
+                                </td>
+                                <td
+                                    class="{{ $request->receivedBy ? 'text-gray-800' : 'text-orange-400' }} whitespace-nowrap px-6 py-4 text-xs">
+                                    {{ $request->receivedBy?->name ?? 'Pending' }}
+                                </td>
+                                @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
+                                <td
+                                    class="items-center whitespace-nowrap px-6 py-4 text-end text-sm font-medium sm:flex sm:justify-end sm:gap-x-2 xl:gap-x-3">
 
-                                            <button wire:click="viewRequest({{ $request }})" type="button"
-                                                class="text-gray-600 hover:text-gray-800">
-                                                View
-                                            </button>
-                                            <button wire:click="success({{ $request->id }})"
-                                                {{ $request->status ? '' : 'disabled' }}
-                                                class="{{ $request->status ? 'text-green-600 hover:text-green-800' : 'text-green-200 cursor-not-allowed' }}">Confirm</button>
-                                        </td>
-                                    @endif
-                                </tr>
+                                    <button wire:click="viewRequest({{ $request }})" type="button"
+                                        class="text-gray-600 text-xs hover:text-gray-800">
+                                        View
+                                    </button>
+                                    <button wire:click="success({{ $request->id }})"
+                                        {{ $request->status ? '' : 'disabled' }}
+                                        class="{{ $request->status ? 'text-green-600 hover:text-green-800' : 'text-green-200 cursor-not-allowed' }} text-xs">Confirm</button>
+                                </td>
+                                @endif
+                            </tr>
                             @empty
                             <tr>
                                 <td colspan="9" class="py-3 text-center text-sm text-gray-500">No requested items
@@ -231,9 +231,9 @@
                                 class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200">
                                 <option value=""> -- Select Role -- </option>
                                 @foreach ($this->userRoles as $role)
-                                    <option class="capitalize" value="{{ $role->name }}">
-                                        {{ $role->name }}
-                                    </option>
+                                <option class="capitalize" value="{{ $role->name }}">
+                                    {{ $role->name }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -244,9 +244,9 @@
                                 class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200">
                                 <option value=""> -- Select User -- </option>
                                 @foreach ($this->receivers as $user)
-                                    <option class="capitalize" value="{{ $user->id }}">
-                                        {{ $user->name }}
-                                    </option>
+                                <option class="capitalize" value="{{ $user->id }}">
+                                    {{ $user->name }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -353,14 +353,14 @@
                                 Printed RIS</button>
                         </div>
                         @else
-                            <div class="justify-center sm:flex">
-                                <button wire:click="printRIS({{ $printWithdraw?->id }})"
-                                    class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
-                                    Printed RIS</button>
-                        @endif
+                        <div class="justify-center sm:flex">
+                            <button wire:click="printRIS({{ $printWithdraw?->id }})"
+                                class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
+                                Printed RIS</button>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

@@ -7,9 +7,9 @@
                 <div class="px-4 py-3 sm:flex sm:items-center sm:justify-between">
                     <div class="relative max-w-xs">
                         <label for="hs-table-search" class="sr-only">Search</label>
-                        <input type="text" name="hs-table-search" id="hs-table-search"
-                            class="shadow-2xs block w-full rounded-lg border-gray-400 px-3 py-1.5 ps-9 focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm"
-                            placeholder="Search for items">
+                        <input type="text" wire:model.live.debounce.300ms="stockSearch" name="hs-table-search" id="hs-table-search"
+                            class="shadow-2xs block w-full rounded-lg border-gray-400 px-3 py-1.5 ps-9 focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm"
+                            placeholder="Search item description">
                         <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                             <svg class="size-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24"
                                 height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -72,50 +72,51 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @forelse($this->stocks as $stock)
-                                <tr class="w-full">
-                                    {{-- <td class="py-3 ps-4">
+                            <tr class="w-full">
+                                {{-- <td class="py-3 ps-4">
                                     <div class="flex h-5 items-center">
                                         <input id="hs-table-search-checkbox-1" type="checkbox"
                                             class="rounded-sm border-gray-200 text-blue-600 focus:ring-blue-500">
                                         <label for="hs-table-search-checkbox-1" class="sr-only">Checkbox</label>
                                     </div>
                                 </td> --}}
-                                    <td
-                                        class="whitespace-nowrap px-6 py-4 text-sm font-medium capitalize text-gray-800">
-                                        {{ $stock->barcode }}
-                                    </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm capitalize text-gray-800">
-                                        {{ $stock->supply->item_description }}
-                                    </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
-                                        {{ $stock->item_quantity }}
-                                    </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
-                                        ₱{{ number_format($stock->item_price, 2) }}
-                                    </td>
-                                    <td
-                                        class="items-center whitespace-nowrap px-6 py-4 text-end text-sm font-medium sm:flex sm:justify-end sm:gap-x-2 xl:gap-x-3">
-                                        <button wire:click="addRequest({{ $stock->id }})"
-                                            class="text-green-600 hover:text-green-800">
-                                            Request
-                                        </button>
-                                        @if (auth()->user()->hasAnyRole(['admin', 'super-admin']))
-                                            <button wire:click="selectEditStock({{ $stock }})"
-                                                class="text-orange-600 hover:text-orange-800">
-                                                Edit
-                                            </button>
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 text-xs font-medium capitalize text-gray-800">
+                                    {{ $stock->barcode }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-xs capitalize text-gray-800">
+                                    {{ $stock->supply->item_description }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-xs text-gray-800">
+                                    {{ $stock->item_quantity }}
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4 text-xs text-gray-800">
+                                    ₱{{ number_format($stock->item_price, 2) }}
+                                </td>
+                                <td
+                                    class="items-center whitespace-nowrap px-6 py-4 text-end text-xs font-medium sm:flex sm:justify-end sm:gap-x-2 xl:gap-x-3">
+                                    <button wire:click="addRequest({{ $stock->id }})"
+                                        class="text-green-600 hover:text-green-800">
+                                        Request
 
-                                            <button type="button"
-                                                class="focus:outline-hidden inline-flex items-center gap-x-2 rounded-lg border border-transparent text-sm font-semibold text-red-600 hover:text-red-800 focus:text-red-800 disabled:pointer-events-none disabled:opacity-50">Delete</button>
-                                        @endif
-                                    </td>
-                                </tr>
+                                    </button>
+                                    @if (auth()->user()->hasAnyRole(['admin', 'super-admin']))
+                                    <button wire:click="selectEditStock({{ $stock }})"
+                                        class="text-orange-600 text-xs hover:text-orange-800">
+                                        Edit
+                                    </button>
+
+                                    <button type="button"
+                                        class="focus:outline-hidden inline-flex items-center gap-x-2 rounded-lg border border-transparent text-xs font-semibold text-red-600 hover:text-red-800 focus:text-red-800 disabled:pointer-events-none disabled:opacity-50">Delete</button>
+                                    @endif
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="4" class="py-3 text-center text-sm text-gray-500">No stocks added
-                                        yet.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="4" class="py-3 text-center text-sm text-gray-500">No stocks added
+                                    yet.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -168,14 +169,14 @@
                         class="sm:w-54 rounded border-gray-400 focus:border-orange-500 focus:ring-orange-500 sm:h-10">
                     <x-input-error :messages="$errors->get('witdrawForm.requested_quantity')" class="mt-2" />
                     @error('witdrawForm.requested_quantity')
-                        <span class="block text-sm text-red-500 sm:mt-2">{{ $message }}</span>
+                    <span class="block text-sm text-red-500 sm:mt-2">{{ $message }}</span>
                     @enderror
                 </div>
                 <hr>
                 <div class="justify-end sm:flex sm:items-center sm:gap-x-3">
                     <button x-on:click="$dispatch('close-modal')"
-                        class="text-sm text-red-600 hover:font-medium hover:text-red-700">Cancel</button>
-                    <button class="text-sm text-green-600 hover:font-medium hover:text-green-700">Request</button>
+                        class="text-sm px-4 py-2 text-red-600 rounded hover:text-gray-200 hover:bg-red-500 border border-red-600 hover:font-medium ">Cancel</button>
+                    <button class="text-sm px-4 py-2 rounded bg-green-600 hover:bg-green-800 text-white hover:font-medium ">Request</button>
                 </div>
             </form>
         </div>
@@ -189,69 +190,73 @@
         <!-- Modal Content -->
         <div
             class="fixed left-1/2 top-10 w-full max-w-md -translate-x-1/2 rounded bg-white p-4 shadow-lg sm:px-5 sm:py-9 xl:max-w-lg">
-            <h4 class="pb-4 text-xl font-semibold">Edit Stock</h4>
+            <div class="sm:flex items-center gap-x-3">
+                <h4 class="text-xl font-semibold">Edit Stock</h4>
+                @if(session('edited'))
+                <p class="text-sm text-green-600">{{ session('edited') }}</p>
+                @endif
+            </div>
 
             {{-- forms --}}
             <form wire:submit.prevent="editStock" class="mt-4 space-y-2">
                 <input type="hidden" wire:model="stockForm.supply_id" />
                 @error('stockForm.supply_id')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
 
                 {{-- inputs --}}
                 <div>
                     <x-input-label for="barcode" :value="__('Barcode')" />
                     <x-text-input id="barcode" type="text" wire:model="stockForm.barcode" autocomplete="off"
-                        class="w-full" required autofocus />
+                        class="w-full text-orange-600" required autofocus />
                     @error('stockForm.barcode')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
                 <div class="sm:flex sm:items-center sm:gap-x-2">
                     <div>
                         <x-input-label for="item_quantity" :value="__('Item Quantity')" />
                         <x-text-input id="item_quantity" type="number" wire:model="stockForm.item_quantity"
-                            class="w-full" required autofocus />
+                            class="w-full text-orange-600" required autofocus />
                         @error('stockForm.item_quantity')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <x-input-label for="item_price" :value="__('Item Price')" />
                         <x-text-input step="0.01" id="item_price" type="number"
-                            wire:model="stockForm.item_price" class="w-full" required autofocus />
+                            wire:model="stockForm.item_price" class="w-full text-orange-600" required autofocus />
                         @error('stockForm.item_price')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
                 <div>
                     <x-input-label for="expiration" :value="__('Expiration')" />
                     <x-text-input id="expiration" type="text" autocomplete="off"
-                        wire:model="stockForm.expiration" class="w-full" required autofocus />
+                        wire:model="stockForm.expiration" class="w-full text-orange-600" required autofocus />
                     @error('stockForm.expiration')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
                     <x-input-label for="remarks" :value="__('Remarks')" />
                     <x-text-input id="remarks" type="text" autocomplete="off" wire:model="stockForm.remarks"
-                        class="w-full" required autofocus />
+                        class="w-full text-orange-600" required autofocus />
                     @error('stockForm.remarks')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="sm:flex sm:items-center sm:justify-end sm:gap-x-5">
+                <div class="sm:flex sm:items-center sm:justify-end sm:gap-x-3">
                     <button @click="$dispatch('close-edit-modal')"
-                        class="mt-4 text-sm text-red-500 hover:font-medium">
+                        class="mt-4 px-4 py-2 border border-red-600 rounded hover:bg-red-600 text-red-600 hover:text-white text-sm transition-all duration-300 hover:font-medium">
                         Close
                     </button>
-                    <button type="submit" class="mt-4 text-sm text-green-600 hover:font-medium">
-                        Add Stock
+                    <button type="submit" class="mt-4  px-4 py-2 rounded text-sm transition-all duration-300 bg-green-600 hover:bg-green-800 text-white hover:font-medium">
+                        Update
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-

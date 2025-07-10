@@ -27,7 +27,9 @@
          <main class="container mx-auto w-full">
              <div class="min-h-screen sm:py-3 xl:py-6">
                  <div class="w-full rounded">
+                     @if(!request()->routeIs('user-list'))
                      @livewire('components.total-cards')
+                     @endif
                      {{ $slot }}
                  </div>
              </div>

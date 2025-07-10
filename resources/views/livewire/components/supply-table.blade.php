@@ -9,9 +9,9 @@
                         <div class="flex items-center gap-x-3">
                             <div>
                                 <label for="hs-table-search" class="sr-only">Search</label>
-                                <input type="text" name="hs-table-search" id="hs-table-search"
-                                    class="shadow-2xs block w-full rounded-lg border-gray-400 px-3 py-1.5 ps-9 focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm"
-                                    placeholder="Search for items">
+                                <input type="text" name="hs-table-search" wire:model.live.debounce.300ms="supplySearch" id="hs-table-search"
+                                    class="shadow-2xs block w-full rounded-lg border-orange-400 px-3 py-1.5 ps-9 focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:pointer-events-none disabled:opacity-50 sm:py-2 sm:text-sm"
+                                    placeholder="Search item names">
                             </div>
                             <div class="sm:flex items-center gap-x-3">
                                 <button x-data x-on:click='$dispatch("open-supply-form")' type="button"
@@ -110,7 +110,11 @@
                 {{-- pagination --}}
             </div>
             <div class="text-gray-700 xl:mt-6">
+                @if($supplySearch)
+                <div></div>
+                @else
                 {{ $this->supplies->links() }}
+                @endif
             </div>
         </div>
     </div>

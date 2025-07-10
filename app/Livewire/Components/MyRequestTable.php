@@ -40,6 +40,11 @@ class MyRequestTable extends Component
         $this->selectedEdit->save();
     }
 
+    public function delete(Withdraw $withdraw)
+    {
+        $withdraw->delete();
+    }
+
     public function mount()
     {
         $this->selectedEdit = Withdraw::first() ?? new Withdraw();

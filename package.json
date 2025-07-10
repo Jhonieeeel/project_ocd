@@ -21,6 +21,7 @@
         "vite": "^6.2.4"
     },
     "dependencies": {
-        "docx-pdf": "^0.0.1"
+        "@preline/collapse": "^3.1.0",
+        "preline": "^3.1.0"
     }
 }

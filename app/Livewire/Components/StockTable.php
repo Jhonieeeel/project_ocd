@@ -17,6 +17,8 @@ class StockTable extends Component
     public $stock_id;
     public $user_id;
 
+    public $stockSearch;
+
     public StockForm $stockForm;
     public WithdrawForm $withdrawForm;
     public Stock $selectedStock;
@@ -29,7 +31,18 @@ class StockTable extends Component
 
     public function editStock()
     {
-        dd($this->validate());
+        $validated = $this->stockForm->validate();
+        $stock = Stock::findOrFail($validated['supply_id']);
+        if (!$stock) {
+
+            session()->flash('error', 'Stock not found.');
+            return;
+        }
+        $stock->fill($validated)->save();
+
+        session()->flash("edited", "Stock Updated");
+
+        $this->stockForm->reset();
     }
 
     public function addRequest($id)
@@ -73,6 +86,12 @@ class StockTable extends Component
     #[Computed()]
     public function stocks()
     {
+        if ($this->stockSearch) {
+            return Stock::whereHas('supply', function ($query) {
+                $query->where('item_description', 'like', "%{$this->stockSearch}%");
+            })->paginate(5);
+        }
+
         return Stock::latest()->paginate(5);
     }
 

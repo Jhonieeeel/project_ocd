@@ -26,72 +26,69 @@
                 <span class="sr-only">Toggle</span>
             </button>
             @auth
-                {{-- dropdown preline --}}
-                <div x-data="{ open: false }" x-cloak class="relative">
-                    <!-- Trigger Button -->
-                    <button x-on:click="open = !open"
-                        class="flex items-center gap-x-2 px-4 py-2 text-sm font-semibold text-white rounded-md">
-                        <span class="capitalize">{{ auth()->user()->name }}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"></path>
-                        </svg>
-                    </button>
+            <div x-data="{ open: false }" x-cloak class="relative hidden sm:block">
+                <!-- Trigger Button -->
+                <button x-on:click="open = !open"
+                    class="flex items-center gap-x-2 px-4 py-2 text-sm font-semibold text-white rounded-md">
+                    <span class="capitalize">{{ auth()->user()->name }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"></path>
+                    </svg>
+                </button>
 
-                    <!-- Dropdown Menu -->
-                    <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:leave="transition ease-in duration-75"
-                        class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg" @click.stop>
-                        <!-- Prevent the dropdown from closing when clicking inside -->
-                        <ul>
-                            <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My
-                                    Profile</a></li>
-                            <li><a href="#"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a></li>
-                            <li><button type="button" wire:click="logout"
-                                    class="text-start w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    Logout
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+                <!-- Dropdown Menu -->
+                <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                    x-transition:leave="transition ease-in duration-75"
+                    class="hidden sm:block absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg" @click.stop>
+                    <!-- Prevent the dropdown from closing when clicking inside -->
+                    <ul>
+                        <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My
+                                Profile</a></li>
+                        <li><a href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a></li>
+                        <li><button type="button" wire:click="logout"
+                                class="text-start w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Logout
+                            </button>
+                        </li>
+                    </ul>
                 </div>
-                {{-- <a class='focus:outline-hidden font-medium text-gray-300 hover:font-semibold hover:text-gray-200' href="#">Logout</a> --}}
+            </div>
+            {{-- <a class='focus:outline-hidden font-medium text-gray-300 hover:font-semibold hover:text-gray-200' href="#">Logout</a> --}}
             @endauth
             @guest
-                <button type="button"
-                    class="shadow-2xs focus:outline-hidden hidden items-center gap-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50 focus:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 sm:inline-flex">
-                    Login
-                </button>
+            <button type="button"
+                class="shadow-2xs focus:outline-hidden hidden items-center gap-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50 focus:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 sm:inline-flex">
+                Login
+            </button>
             @endguest
         </div>
         <div id="hs-navbar-alignment"
-            class="hs-collapse hidden grow basis-full overflow-hidden transition-all duration-300 sm:order-2 sm:block sm:grow-0 sm:basis-auto"
+            class="hs-collapse   grow basis-full overflow-hidden transition-all duration-300 sm:order-2 sm:grow-0 sm:basis-auto"
             aria-labelledby="hs-navbar-alignment-collapse">
             <div class="mt-5 flex flex-col gap-5 sm:mt-0 sm:flex-row sm:items-center sm:ps-5">
-                <a wire:navigate @class([
-                    'focus:outline-hidden font-medium text-white hover:font-semibold hover:text-gray-200',
-                    'border-b-2 border-white text-white' => request()->routeIs('dashboard'),
-                ]) href="{{ route('dashboard') }}">Dashboard</a>
+                <a wire:navigate @class([ 'focus:outline-hidden font-medium text-white hover:font-semibold hover:text-gray-200' , 'border-b-2 border-white text-white'=> request()->routeIs('dashboard'),
+                    ]) href="{{ route('dashboard') }}">Dashboard</a>
                 @if (auth()->user()->hasAnyRole(['admin', 'super-admin']))
-                    <a wire:navigate @class([
-                        'focus:outline-hidden font-medium text-white hover:font-semibold hover:text-gray-200',
-                        'border-b-2 border-white text-white' => request()->routeIs('supplies'),
+                <a wire:navigate @class([ 'focus:outline-hidden font-medium text-white hover:font-semibold hover:text-gray-200' , 'border-b-2 border-white text-white'=> request()->routeIs('supplies'),
                     ]) href="{{ route('supplies') }}">Supplies</a>
                 @endif
-                <a wire:navigate @class([
-                    'focus:outline-hidden font-medium text-white hover:font-semibold hover:text-gray-200',
-                    'border-b-2 border-white text-white' => request()->routeIs('stocks'),
-                ]) wire:navigate href="{{ route('stocks') }}">Stocks</a>
+                <a wire:navigate @class([ 'focus:outline-hidden font-medium text-white hover:font-semibold hover:text-gray-200' , 'border-b-2 border-white text-white'=> request()->routeIs('stocks'),
+                    ]) wire:navigate href="{{ route('stocks') }}">Stocks</a>
                 @if (auth()->user()->hasAnyRole(['admin', 'super-admin']))
-                    <a wire:navigate @class([
-                        'focus:outline-hidden font-medium text-white hover:font-semibold hover:text-gray-200',
-                        'border-b-2 border-white text-white' => request()->routeIs('request-list'),
+                <a wire:navigate @class([ 'focus:outline-hidden font-medium text-white hover:font-semibold hover:text-gray-200' , 'border-b-2 border-white text-white'=> request()->routeIs('request-list'),
                     ]) wire:navigate
-                        href="{{ route('request-list') }}">Requests</a>
+                    href="{{ route('request-list') }}">Requests</a>
                 @endif
+                @if (auth()->user()->hasRole('super-admin'))
+                <a href="" class="sm:hidden font-medium text-white hover:font-semibold hover:text-gray-200">User Management</a>
+                @endif
+                <button type="button" wire:click="logout"
+                    class="text-start sm:hidden w-full block pt-4 text-sm text-white ">
+                    Logout
+                </button>
             </div>
         </div>
     </nav>
 </header>
-

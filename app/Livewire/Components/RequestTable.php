@@ -15,6 +15,7 @@ class RequestTable extends Component
 {
     public $roles;
     public $users;
+    public $requestSearch;
 
     public WithdrawForm $withdrawForm;
     public Withdraw $selectedRequest;
@@ -42,7 +43,8 @@ class RequestTable extends Component
     }
 
     #[Computed()]
-    public function userRoles() {
+    public function userRoles()
+    {
         return Role::all();
     }
 
@@ -59,7 +61,7 @@ class RequestTable extends Component
         ]);
 
         $validated = $this->withdrawForm->validate();
-        
+
         $withdraw = Withdraw::find($this->selectedRequest->id);
 
         $withdraw->update([
@@ -145,6 +147,14 @@ class RequestTable extends Component
     #[Computed()]
     public function requests()
     {
+
+        if ($this->requestSearch) {
+            return Withdraw::whereHas('stock.supply', function ($query) {
+                $query->where('item_description', 'like', "%{$this->requestSearch}%");
+            })->paginate(5);
+        }
+        // supply -> stock -> withdraw
+
         return Withdraw::paginate(5);
     }
 
