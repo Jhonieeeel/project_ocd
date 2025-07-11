@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Components;
 
+use App\Jobs\GenerateWordPdfJob;
 use App\Livewire\Forms\WithdrawForm;
 use App\Models\ApprovedWithdraw;
 use App\Models\User;
@@ -9,7 +10,9 @@ use App\Models\Withdraw;
 use Spatie\Permission\Models\Role;
 
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class RequestTable extends Component
 {
@@ -70,7 +73,8 @@ class RequestTable extends Component
             'approved_by' => (int) $validated['approved_by'] ?: null,
             'issued_by' => (int) $validated['issued_by'] ?: null,
             'received_by' => (int) $validated['received_by'] ?: null,
-            'status' => ($validated['approved_by'] && $validated['issued_by'] && $validated['received_by'] && $validated['requested_by'])
+            'requested_by' => (int) $validated['requested_by'] ?: null,
+            'status' => ($validated['approved_by'] && $validated['issued_by'] && $validated['received_by'] && $validated['requested_by']),
         ]);
 
         session()->flash('withdraw_updated', "Withdraw Request Updated Successfully");
@@ -82,66 +86,40 @@ class RequestTable extends Component
     public function success($withdraw_id)
     {
         $this->printWithdraw = Withdraw::find($withdraw_id);
-        $this->dispatch('open-success-modal');
+
+        $approved = ApprovedWithdraw::create([
+            'withdraw_id' => $this->printWithdraw->id,
+        ]);
+
+        if ($approved) {
+            GenerateWordPdfJob::dispatch($this->printWithdraw);
+            $this->dispatch('open-success-modal');
+        }
     }
 
-    public function printRIS($withdraw_id)
+    public function printRIS(Withdraw $withdraw)
     {
 
-        $approvedWithdraw = ApprovedWithdraw::find($withdraw_id);
-        if ($approvedWithdraw) {
-            $approvedWithdraw->printed_times += 1;
-            $approvedWithdraw->save();
-
-            session()->flash('printed_created', "Item Printed Successfully");
-        } else {
-            ApprovedWithdraw::create([
-                'withdraw_id' => $withdraw_id,
-                'printed_times' => 1
-            ]);
-        }
-
-        // PDF CONVERSION
-        $inputPath = public_path('docs/ris.docx');
-        $outputPath = public_path('docs');
-        $pdfFile = $outputPath . '/ris.pdf'; // Output filename LibreOffice will generate
-
-        // Ensure HOME is set (important for Windows + LibreOffice)
-        if (!getenv('HOME')) {
-            putenv('HOME=' . storage_path());
-        }
-
-        // Properly quoted path to handle spaces in "Program Files"
-        $libreOfficePath = '"C:\\Program Files\\LibreOffice\\program\\soffice.exe"';
-
-        // Build and run the conversion command
-        $command = "{$libreOfficePath} --headless --convert-to pdf \"{$inputPath}\" --outdir \"{$outputPath}\"";
-        exec($command . ' 2>&1', $output, $returnCode);
-
-        // Debug output if needed:
-        // dd(['cmd' => $command, 'output' => $output, 'return_code' => $returnCode]);
-
-        if (file_exists($pdfFile)) {
-            // Dispatch event to open/print the PDF in the browser
-            $this->dispatch('print-docs', [
-                'url' => asset('docs/ris.pdf'),
-            ]);
-        } else {
-            $this->dispatch('print-docs', [
-                'url' => null,
-                'error' => 'PDF conversion failed.',
-                'details' => $output,
-            ]);
-        }
-
+        $approvedWithdraw = ApprovedWithdraw::find($withdraw->id);
 
         session()->flash('printed_created', "New print record added");
     }
+
+    #[On('print-docs')]
+    public function incrementPrintTimes($data)
+    {
+        $id = $data['approved_id'] ?? null;
+        $increment = ApprovedWithdraw::find($id);
+        $increment->printed_times += 1;
+        $increment->save();
+    }
+
 
     public function delete(Withdraw $withdraw)
     {
         $withdraw->delete();
         $this->dispatch('close-modal');
+        $this->redirect(route('request-list'), navigate: true);
     }
 
     #[Computed()]
@@ -153,7 +131,6 @@ class RequestTable extends Component
                 $query->where('item_description', 'like', "%{$this->requestSearch}%");
             })->paginate(5);
         }
-        // supply -> stock -> withdraw
 
         return Withdraw::paginate(5);
     }

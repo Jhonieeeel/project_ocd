@@ -22,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'division',
+        'office',
+        'position'
     ];
 
     public function withdraw()

@@ -72,7 +72,11 @@ class StockTable extends Component
             $userRequest->requested_quantity += $this->withdrawForm->requested_quantity;
             $userRequest->save();
         } else {
+            $month = now()->format("m");
+            $year = now()->format("Y");
+            $ris = "RIS-{$month}-{$year}";
             Withdraw::create([
+                'ris' => $ris,
                 'stock_id' => $this->withdrawForm->stock_id,
                 'user_id' => $this->withdrawForm->user_id,
                 'requested_quantity' => $this->withdrawForm->requested_quantity,

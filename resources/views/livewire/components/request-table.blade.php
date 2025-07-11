@@ -251,13 +251,6 @@
                             </select>
                         </div>
                     </div>
-                    {{-- remarks --}}
-                    <div>
-                        <x-input-label for="remarks" :value="__('Remarks')" />
-                        <x-text-input id="remarks" type="text" wire:model="withdrawForm.remarks" class="w-full"
-                            required autofocus />
-                        <x-input-error :messages="$errors->get('withdrawForm.remarks')" class="mt-2" />
-                    </div>
                     {{-- buttons --}}
                     <div class="sm:flex sm:items-center sm:justify-end sm:gap-x-5">
                         <button wire:click="delete({{ $selectedRequest }})"
@@ -301,17 +294,17 @@
                         </div>
                     </div>
                     <div class="mt-2 text-center">
-                        <small class="text-orange-400">Confirmed Request</small>
+                        <small class="text-gray-400">Confirmed Request</small>
                         <h3 class="text-xl font-semibold">{{ $printWithdraw?->stock->supply->item_description }}</h3>
 
                     </div>
                     <hr>
                     <div class="mt-2 w-full justify-between sm:flex">
                         <div class="space-y-2 text-start">
-                            <p class="text-sm text-orange-400">Barcode:</p>
-                            <p class="text-sm text-orange-400">Approved By:</p>
-                            <p class="text-sm text-orange-400">Issued By:</p>
-                            <p class="text-sm text-orange-400">Requested Qty:</p>
+                            <p class="text-sm text-gray-400">Barcode:</p>
+                            <p class="text-sm text-gray-400">Approved By:</p>
+                            <p class="text-sm text-gray-400">Issued By:</p>
+                            <p class="text-sm text-gray-400">Requested Qty:</p>
                         </div>
                         <div class="space-y-2 text-end">
                             <p class="text-sm text-gray-600">
@@ -331,8 +324,8 @@
                     <hr>
                     <div class="mt-2 w-full justify-between sm:flex">
                         <div class="space-y-2 text-start">
-                            <p class="text-sm text-orange-400">Requested By:</p>
-                            <p class="text-sm text-orange-400">Received By:</p>
+                            <p class="text-sm text-gray-400">Requested By:</p>
+                            <p class="text-sm text-gray-400">Received By:</p>
 
                         </div>
                         <div class="space-y-2 text-end">
@@ -348,17 +341,17 @@
                         @if (session('printed_created'))
                         <div class="items-center justify-center gap-x-4 sm:flex">
                             <p class="px-4 text-xs text-green-600">{{ session('printed_created') }}</p>
-                            <button wire:click="printRIS({{ $printWithdraw?->id }})"
+                            <button wire:loading.attr="disabled" wire:target="printRIS" wire:click="printRIS({{ $printWithdraw }})"
                                 class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
                                 Printed RIS</button>
                         </div>
                         @else
                         <div class="justify-center sm:flex">
-                            <button wire:click="printRIS({{ $printWithdraw?->id }})"
+                            <button wire:loading.attr="disabled" wire:target="printRIS" wire:click="printRIS({{ $printWithdraw }})"
                                 class="rounded bg-green-600 px-4 py-2 text-xs font-medium text-white transition-all duration-300 hover:bg-green-800">Get
                                 Printed RIS</button>
-                            @endif
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('approved_withdraws', function (Blueprint $table) {
             $table->id();
-            $table->integer('printed_times');
+            $table->integer('printed_times')->default(1);
             $table->foreignId("withdraw_id")->constrained()->noActionOnDelete();
+            $table->string('filepath')->nullable();
             $table->timestamps();
         });
     }

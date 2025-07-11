@@ -22,31 +22,46 @@ class DatabaseSeeder extends Seeder
         $super = User::factory()->create([
             'name' => 'Dave Madayag',
             'email' => 'super@example.com',
+            'division' => 'AFMS',
+            'office' => 'GASU',
+            'position' => 'Head',
         ]);
 
         $admin = User::factory()->create([
             'name' => 'Maam Mar',
             'email' => 'admin@example.com',
+            'division' => 'AFMS',
+            'office' => '',
+            'position' => "Head"
         ]);
 
         $admin2 = User::factory()->create([
             'name' => 'Sir Ray',
             'email' => 'issuenace@example.com',
+            'division' => 'AFMS',
+            'office' => 'GASU',
         ]);
 
         $admin3 = User::factory()->create([
             'name' => 'Sir Rocky',
             'email' => 'rocky@example.com',
+            'division' => 'AFMS',
+            'office' => 'GASU',
         ]);
 
         $admin4 = User::factory()->create([
             'name' => 'Sir Carilito',
             'email' => 'carlito@example.com',
+            'division' => 'AFMS',
+            'office' => 'RMU'
         ]);
 
         $user = User::factory()->create([
             'name' => 'Mike Alsong',
             'email' => 'user@example.com',
+            'division' => 'AFMS',
+            'office' => 'RMU',
+            'position' => 'GIP'
         ]);
 
         Role::create(['name' => 'super-admin']);

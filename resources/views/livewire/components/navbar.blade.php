@@ -45,8 +45,8 @@
                     <ul>
                         <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My
                                 Profile</a></li>
-                        <li><a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a></li>
+                        <li><a href="{{ route('user-list') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Users List</a></li>
                         <li><button type="button" wire:click="logout"
                                 class="text-start w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Logout

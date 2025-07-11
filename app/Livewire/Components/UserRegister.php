@@ -12,6 +12,8 @@ class UserRegister extends Component
 {
     public UserForm $userForm;
     public $userRole;
+    public $userDivison;
+    public $userOffice;
 
     public function save()
     {
@@ -30,7 +32,9 @@ class UserRegister extends Component
     public function render()
     {
         return view('livewire.components.user-register', [
-            'roles' => ['super-admin', 'admin', 'issueance', 'user']
+            'roles' => ['super-admin', 'admin', 'issueance', 'user'],
+            'divisions' => ['ORD', 'AFMS'],
+            'offices' => ['GASU', 'PMU', 'FMU', 'HRMU', 'RMU'],
         ]);
     }
 }

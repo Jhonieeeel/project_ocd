@@ -24,7 +24,7 @@ class Withdraw extends Model
         'issued_by'    => 'integer',
         'received_by'  => 'integer',
     ];
-    
+
     public function approvedWithdraw()
     {
         return $this->hasMany(ApprovedWithdraw::class);
@@ -61,24 +61,26 @@ class Withdraw extends Model
     }
 
 
-    // mutator
-    public function setRequestedByAttribute($attributeValue) {
+    public function setRequestedByAttribute($attributeValue)
+    {
         $this->attributes['requested_by'] = $attributeValue;
 
-        if($attributeValue) {
+        if ($attributeValue) {
             $this->attributes['requested_date'] = now()->toDateString();
         }
     }
 
-    public function setApprovedByAttribute($attributeValue) {
+    public function setApprovedByAttribute($attributeValue)
+    {
         $this->attributes['approved_by'] = $attributeValue;
 
-        if($attributeValue) {
+        if ($attributeValue) {
             $this->attributes['approved_date'] = now()->toDateString();
         }
     }
 
-    public function setIssuedByAttribute($attributeValue) {
+    public function setIssuedByAttribute($attributeValue)
+    {
         $this->attributes['issued_by'] = $attributeValue;
 
         if ($attributeValue) {
@@ -96,12 +98,12 @@ class Withdraw extends Model
         }
     }
 
-    public function setReceivedByAttribute($attributeValue) {
+    public function setReceivedByAttribute($attributeValue)
+    {
         $this->attributes['received_by'] = $attributeValue;
 
         if ($attributeValue) {
             $this->attributes['received_date'] = now()->toDateString();
         }
     }
-    
 }
